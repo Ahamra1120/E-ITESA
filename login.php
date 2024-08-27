@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,30 +37,23 @@
     <div class="splash-container">
       <div class="card">
         <div class="card-header text-center">
-          <a href="../index.html"><img class="logo-img" src="assets/images/E ITESA.png" alt="logo" style="width: 150px; height: 75px" /></a><span class="splash-description">Please enter your user information.</span>
+          <a href="../index.html"><img class="logo-img" src="assets/images/E OFFICE.png" alt="logo" style="width: 200px; height: 100px" /></a><span class="splash-description">Please enter your user information.</span>
         </div>
         <div class="card-body">
-          <form>
+          <form method="POST" action="cek_login.php">
             <div class="form-group">
-              <input class="form-control form-control-lg" id="username" type="text" placeholder="Username" autocomplete="off" />
+              <input class="form-control form-control-lg" type="text" id="username" name="username" placeholder="Username" autocomplete="off" required/>
             </div>
             <div class="form-group">
-              <input class="form-control form-control-lg" id="password" type="password" placeholder="Password" />
+              <input class="form-control form-control-lg" id="password" type="password" name="password" placeholder="Password" required/>
             </div>
             <div class="form-group">
               <label class="custom-control custom-checkbox"> <input class="custom-control-input" type="checkbox" /><span class="custom-control-label">Remember Me</span> </label>
             </div>
-            <button type="submit" class="btn btn-primary btn-lg btn-block">Sign in</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" name="login" value="Login">Sign in</button>
           </form>
         </div>
-        <div class="card-footer bg-white p-0">
-          <div class="card-footer-item card-footer-item-bordered">
-            <a href="#" class="footer-link">Create An Account</a>
-          </div>
-          <div class="card-footer-item card-footer-item-bordered">
-            <a href="#" class="footer-link">Forgot Password</a>
-          </div>
-        </div>
+        
       </div>
     </div>
 
