@@ -1,3 +1,23 @@
+<?php
+// Database connection
+$dsn = 'mysql:host=localhost;dbname=e-office';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
+
+// Fetch data from the surat table
+$sql = 'SELECT no_permohonan, jenis_permohonan, waktu_permohonan, status_permohonan FROM surat';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -162,9 +182,6 @@
                 <li class="nav-item">
                   <a class="nav-link active" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="ruangan.html"><i class="fa fa-fw fa-key"></i>Peminjaman Ruangan</a>
-                </li>
               </ul>
             </div>
           </nav>
@@ -222,46 +239,37 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>1</td>
-                            <td>id000001</td>
-                            <td>Surat Keterangan Siswa</td>
-                            <td>27-08-2018 01:22:12</td>
-                            <td><span class="badge-dot badge-brand mr-1"></span>Diproses</td>
-                            <td>
-                              <a href="proses-surat.html" class="btn btn-primary btn-sm" role="button" aria-disabled="true"><i class="fas fa-edit"></i> Detail</a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>2</td>
-                            <td>id000002</td>
-                            <td>Surat Permohonan Penelitian</td>
-                            <td>25-08-2018 21:12:56</td>
-                            <td><span class="badge-dot badge-success mr-1"></span>Diterima</td>
-                            <td>
-                              <a href="success-surat.html" class="btn btn-success btn-sm" role="button" aria-disabled="true"><i class="fas fa-check"></i> Selesai</a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>3</td>
-                            <td>id000003</td>
-                            <td>Surat Keterangan Siswa</td>
-                            <td>24-08-2018 14:12:77</td>
-                            <td><span class="badge-dot badge-primary mr-1"></span>Menunggu Approval</td>
-                            <td>
-                              <a href="approval-surat.html" class="btn btn-primary btn-sm" role="button" aria-disabled="true"><i class="fas fa-edit"></i> Detail</a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>4</td>
-                            <td>id000004</td>
-                            <td>Surat Keterangan Siswa</td>
-                            <td>23-08-2018 09:12:35</td>
-                            <td><span class="badge-dot badge-danger mr-1"></span>Ditolak</td>
-                            <td>
-                              <a href="#" class="btn btn-danger btn-sm" role="button" aria-disabled="true"><i class="fas fa-edit"></i> Detail</a>
-                            </td>
-                          </tr>
+                          <?php
+                          $no = 1;
+                          foreach ($suratData as $row) {
+                              echo '<tr>';
+                              echo '<td>' . $no++ . '</td>';
+                              echo '<td>' . htmlspecialchars($row['no_permohonan']) . '</td>';
+                              echo '<td>' . htmlspecialchars($row['jenis_permohonan']) . '</td>';
+                              echo '<td>' . htmlspecialchars($row['waktu_permohonan']) . '</td>';
+                              echo '<td>';
+                              switch ($row['status_permohonan']) {
+                                  case 'Ditolak':
+                                      echo '<span class="badge-dot badge-danger mr-1"></span>Ditolak';
+                                      break;
+                                  case 'Menunggu Approval':
+                                      echo '<span class="badge-dot badge-primary mr-1"></span>Menunggu Approval';
+                                      break;
+                                  case 'Diterima':
+                                      echo '<span class="badge-dot badge-success mr-1"></span>Diterima';
+                                      break;
+                                  case 'Diproses':
+                                      echo '<span class="badge-dot badge-brand mr-1"></span>Diproses';
+                                      break;
+                                  default:
+                                      echo '<span class="badge-dot badge-secondary mr-1"></span>Unknown';
+                                      break;
+                              }
+                              echo '</td>';
+                              echo '<td><a href="proses-surat.html" class="btn btn-primary btn-sm" role="button" aria-disabled="true"><i class="fas fa-edit"></i> Detail</a></td>';
+                              echo '</tr>';
+                          }
+                          ?>
                         </tbody>
                       </table>
                     </div>
