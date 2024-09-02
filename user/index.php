@@ -309,7 +309,7 @@ $conn->close();
          </a>
         </li>
         <li class="nav-item">
-         <a class="nav-link" href="surat.html">
+         <a class="nav-link" href="surat.php">
           <i class="fa fa-fw fa-envelope">
           </i>
           Permohonan Surat
