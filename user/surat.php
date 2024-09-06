@@ -177,7 +177,7 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <ul class="navbar-nav flex-column">
                 <li class="nav-divider">Menu</li>
                 <li class="nav-item">
-                  <a class="nav-link" href="index.html"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link active" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
