@@ -1,23 +1,3 @@
-<?php
-// Database connection
-$dsn = 'mysql:host=localhost;dbname=e-office';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO($dsn, $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
-}
-
-// Fetch data from the surat table
-$sql = 'SELECT no_permohonan, jenis_permohonan, waktu_permohonan, status_permohonan FROM surat';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,7 +14,8 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" />
     <link rel="stylesheet" href="../assets/vendor/charts/c3charts/c3.css" />
     <link rel="stylesheet" href="../assets/vendor/fonts/flag-icon-css/flag-icon.min.css" />
-    <title>E-ITESA - Permohonan Surat</title>
+    <link rel="stylesheet" href="../assets/vendor/datepicker/tempusdominus-bootstrap-4.css" />
+    <title>E-Simples - Permohonan Surat</title>
   </head>
 
   <body>
@@ -177,7 +158,7 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <ul class="navbar-nav flex-column">
                 <li class="nav-divider">Menu</li>
                 <li class="nav-item">
-                  <a class="nav-link" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link" href="index.html"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link active" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
@@ -202,13 +183,13 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="row">
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="page-header">
-                  <h2 class="pageheader-title">E-ITESA Dashboard</h2>
-                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-ITESA Smart Administration Dashboard</p>
+                  <h2 class="pageheader-title">Permohonan Surat</h2>
+                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-Simples Smart Administration Dashboard</p>
                   <div class="page-breadcrumb">
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">E-ITESA</li>
+                        <li class="breadcrumb-item active" aria-current="page">Permohonan Surat</li>
                       </ol>
                     </nav>
                   </div>
@@ -218,67 +199,122 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <!-- ============================================================== -->
             <!-- end pageheader  -->
             <!-- ============================================================== -->
-            <!-- Status Permohonan -->
-            <div class="row">
-              <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
-                <div class="card">
-                  <h5 class="card-header d-flex justify-content-between align-items-center">
-                    Status Permohonan <a href="tambah-data.php" class="btn btn-space btn-primary"><i class="fas fa-plus-square"></i> Tambah Permohonan</a>
-                  </h5>
-                  <div class="card-body p-0">
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead class="bg-light">
-                          <tr class="border-0">
-                            <th class="border-0">#</th>
-                            <th class="border-0">No. Permohonan</th>
-                            <th class="border-0">Jenis Permohonan</th>
-                            <th class="border-0">Waktu Permohonan</th>
-                            <th class="border-0">Status</th>
-                            <th class="border-0">Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <?php
-                          $no = 1;
-                          foreach ($suratData as $row) {
-                              echo '<tr>';
-                              echo '<td>' . $no++ . '</td>';
-                              echo '<td>' . htmlspecialchars($row['no_permohonan']) . '</td>';
-                              echo '<td>' . htmlspecialchars($row['jenis_permohonan']) . '</td>';
-                              echo '<td>' . htmlspecialchars($row['waktu_permohonan']) . '</td>';
-                              echo '<td>';
-                              switch ($row['status_permohonan']) {
-                                  case 'Ditolak':
-                                      echo '<span class="badge-dot badge-danger mr-1"></span>Ditolak';
-                                      break;
-                                  case 'Menunggu Approval':
-                                      echo '<span class="badge-dot badge-primary mr-1"></span>Menunggu Approval';
-                                      break;
-                                  case 'Diterima':
-                                      echo '<span class="badge-dot badge-success mr-1"></span>Diterima';
-                                      break;
-                                  case 'Diproses':
-                                      echo '<span class="badge-dot badge-brand mr-1"></span>Diproses';
-                                      break;
-                                  default:
-                                      echo '<span class="badge-dot badge-secondary mr-1"></span>Unknown';
-                                      break;
-                              }
-                              echo '</td>';
-                              echo '<td><a href="proses-surat.html" class="btn btn-primary btn-sm" role="button" aria-disabled="true"><i class="fas fa-edit"></i> Detail</a></td>';
-                              echo '</tr>';
-                          }
-                          ?>
-                        </tbody>
-                      </table>
+            <div class="ecommerce-widget">
+              <div class="row justify-content-center">
+                <!-- Awal Form -->
+                    <!-- ============================================================== -->
+                    <!-- valifation types -->
+                    <!-- ============================================================== -->
+                    <div class="col-xl-15 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="card">
+                            <h5 class="card-header">Formulir Permohonan Surat</h5>
+                            <div class="card-body">
+                                <form id="validationform" data-parsley-validate="" novalidate="">
+                                  <div class="form-group row">
+                                      <label class="col-12 col-sm-3 col-form-label text-sm-right">Jenis Permohonan Surat</label>
+                                      <div class="col-12 col-sm-8 col-lg-6">
+                                          <select class="custom-select" id="inputGroupSelect01">
+                                              <option selected>Silahkan Pilih...</option>
+                                              <option value="1">Surat Keterangan Aktif Siswa</option>
+                                              <option value="2">Surat Keterangan Kelakuan Baik</option>
+                                              <option value="3">Surat Keterangan Rekomendasi Siswa</option>
+                                              <option value="4">Surat Keterangan Dispensasi</option>
+                                              <option value="5">Surat Keterangan Peringkat</option>
+                                              <option value="5">Surat Keterangan Prestasi</option>
+                                              <option value="5">Surat Tugas Lomba Siswa</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tempat Lahir</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Lahir</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input type="text" placeholder="MM/DD/YYYY" class="form-control datetimepicker-input" id="datetimepicker4" data-toggle="datetimepicker" data-target="#datetimepicker4" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">NISN</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">NIS</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                        </div>
+                                    </div><div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas</label>
+                                    <div class="col-12 col-sm-8 col-lg-6">
+                                        <select class="custom-select" id="inputGroupSelect01">
+                                            <option selected>Silahkan Pilih...</option>
+                                            <option value="X-A">X-A</option>
+                                            <option value="X-B">X-B</option>
+                                            <option value="X-C">X-C</option>
+                                            <option value="X-D">X-D</option>
+                                            <option value="X-E">X-E</option>
+                                            <option value="X-F">X-F</option>
+                                            <option value="X-G">X-G</option>
+                                            <option value="X-H">X-H</option>
+                                            <option value="XI-A">XI-A</option>
+                                            <option value="XI-B">XI-B</option>
+                                            <option value="XI-C">XI-C</option>
+                                            <option value="XI-D">XI-D</option>
+                                            <option value="XI-E">XI-E</option>
+                                            <option value="XI-F">XI-F</option>
+                                            <option value="XI-G">XI-G</option>
+                                            <option value="XI-H">XI-H</option>
+                                            <option value="XII-A">XII-A</option>
+                                            <option value="XII-B">XII-B</option>
+                                            <option value="XII-C">XII-C</option>
+                                            <option value="XII-D">XII-D</option>
+                                            <option value="XII-E">XII-E</option>
+                                            <option value="XII-F">XII-F</option>
+                                            <option value="XII-G">XII-G</option>
+                                            <option value="XII-H">XII-H</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Keperluan (Deskripsi)</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Lengkap</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <textarea placeholder="Nama Jalan, Nomor Rumah, RT/RW, Kelurahan, Kecamatan, Kota/Kab, Provinsi, Kode Pos" required="" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row text-right">
+                                        <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
+                                            <button type="submit" class="btn btn-space btn-primary">Submit</button>
+                                            <button class="btn btn-space btn-secondary">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    <!-- ============================================================== -->
+                    <!-- end valifation types -->
+                    <!-- ============================================================== -->
+                <!-- Akhir Form -->
           </div>
         </div>
+          </div>
         <!-- ============================================================== -->
         <!-- footer -->
         <!-- ============================================================== -->
@@ -328,5 +364,34 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="../assets/vendor/charts/c3charts/d3-5.4.0.min.js"></script>
     <script src="../assets/vendor/charts/c3charts/C3chartjs.js"></script>
     <script src="../assets/libs/js/dashboard-ecommerce.js"></script>
+    <!-- Calendar -->
+    <script src="../assets/vendor/datepicker/moment.js"></script>
+    <script src="../assets/vendor/datepicker/tempusdominus-bootstrap-4.js"></script>
+    <script src="../assets/vendor/datepicker/datepicker.js"></script>
+    <script src="../assets/vendor/parsley/parsley.js"></script>
+    <!-- Form Validity -->
+    <script>
+    $('#form').parsley();
+    </script>
+    <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+    </script>
   </body>
 </html>
