@@ -73,7 +73,7 @@ $conn->close();
    <div class="dashboard-header">
     <nav class="navbar navbar-expand-lg bg-white fixed-top">
      <br/>
-     <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 360px; height: 68px; margin-left: 30px"/>
+     <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
      <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
       <span class="navbar-toggler-icon">
       </span>

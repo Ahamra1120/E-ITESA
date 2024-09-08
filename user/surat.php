@@ -48,7 +48,7 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="dashboard-header">
         <nav class="navbar navbar-expand-lg bg-white fixed-top">
           <br />
-          <img src="../assets/images/E ITESA.png" alt="Logo E-Itesa" style="width: 100px; height: 50px; margin-left: 30px" />
+          <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -252,7 +252,7 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                   case 'Ditolak':
                                       echo '<span class="badge-dot badge-danger mr-1"></span>Ditolak';
                                       break;
-                                  case 'Menunggu Approval':
+                                  case 'Menunggu Konfirmasi':
                                       echo '<span class="badge-dot badge-primary mr-1"></span>Menunggu Approval';
                                       break;
                                   case 'Diterima':

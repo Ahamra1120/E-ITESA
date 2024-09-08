@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css" />
     <link href="../assets/vendor/fonts/circular-std/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="../assets/libs/css/style.css" />
@@ -15,7 +16,12 @@
     <link rel="stylesheet" href="../assets/vendor/charts/c3charts/c3.css" />
     <link rel="stylesheet" href="../assets/vendor/fonts/flag-icon-css/flag-icon.min.css" />
     <link rel="stylesheet" href="../assets/vendor/datepicker/tempusdominus-bootstrap-4.css" />
-    <title>E-Simples - Permohonan Surat</title>
+    <script>
+        function submitForms() {
+    document.getElementById('pengajuanForm').submit();
+}
+    </script>
+    <title>E-ITESA - Permohonan Surat</title>
   </head>
 
   <body>
@@ -29,7 +35,7 @@
       <div class="dashboard-header">
         <nav class="navbar navbar-expand-lg bg-white fixed-top">
           <br />
-          <img src="../assets/images/E ITESA.png" alt="Logo E-Itesa" style="width: 100px; height: 50px; margin-left: 30px" />
+          <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -158,10 +164,10 @@
               <ul class="navbar-nav flex-column">
                 <li class="nav-divider">Menu</li>
                 <li class="nav-item">
-                  <a class="nav-link" href="index.html"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                  <a class="nav-link active" href="surat.php"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
                 </li>
               </ul>
             </div>
@@ -184,7 +190,7 @@
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="page-header">
                   <h2 class="pageheader-title">Permohonan Surat</h2>
-                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-Simples Smart Administration Dashboard</p>
+                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-ITESA Smart Administration Dashboard</p>
                   <div class="page-breadcrumb">
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb">
@@ -207,13 +213,35 @@
                     <!-- ============================================================== -->
                     <div class="col-xl-15 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
-                            <h5 class="card-header">Formulir Permohonan Surat</h5>
                             <div class="card-body">
-                                <form id="validationform" data-parsley-validate="" novalidate="">
+                            <h5 class="card-header">Biodata Pemohon</h5>
+                            <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])): ?>
+                                <p>Form has been submitted.</p>
+                            <?php endif; ?>
+                            <form id="pengajuanForm" action="" method="POST">
+                            <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="nama_general" type="text" required="" placeholder="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Telepon (WA)</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="telp_pemohon" type="text" required="" placeholder="" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Email</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="email_pemohon" type="text" required="" placeholder="" class="form-control">
+                                        </div>
+                                </div>
+                                <h5 class="card-header">Formulir Permohonan Surat</h5>
                                   <div class="form-group row">
                                       <label class="col-12 col-sm-3 col-form-label text-sm-right">Jenis Permohonan Surat</label>
                                       <div class="col-12 col-sm-8 col-lg-6">
-                                          <select class="custom-select" id="inputGroupSelect01">
+                                          <select name="jenis_permohonan" class="custom-select" id="inputGroupSelect01">
                                               <option selected>Silahkan Pilih...</option>
                                               <option value="1">Surat Keterangan Aktif Siswa</option>
                                               <option value="2">Surat Keterangan Kelakuan Baik</option>
@@ -225,39 +253,51 @@
                                           </select>
                                       </div>
                                   </div>
+                                    <div class="form-group row hidden">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Permohonan</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="no_permohonan" type="text" required="" placeholder="HIDDEN" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row hidden">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Surat</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="no_surat" type="text" required="" placeholder="HIDDEN" class="form-control">
+                                        </div>
+                                    </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="nama_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Tempat Lahir</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="tempatlahir_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Lahir</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="text" placeholder="MM/DD/YYYY" class="form-control datetimepicker-input" id="datetimepicker4" data-toggle="datetimepicker" data-target="#datetimepicker4" />
+                                            <input name="ttl_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker4" />
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">NISN</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="nisn_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">NIS</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="nis_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div><div class="form-group row">
                                     <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas</label>
                                     <div class="col-12 col-sm-8 col-lg-6">
-                                        <select class="custom-select" id="inputGroupSelect01">
+                                        <select name="kelas_pemohon" class="custom-select" id="inputGroupSelect01">
                                             <option selected>Silahkan Pilih...</option>
                                             <option value="X-A">X-A</option>
                                             <option value="X-B">X-B</option>
@@ -289,22 +329,120 @@
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Keperluan (Deskripsi)</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <textarea name="keperluan_pemohon" required="" placeholder="Masukkan keperluan untuk pembuatan surat" class="form-control"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Lengkap</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Lampiran Berkas Pendukung</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <textarea placeholder="Nama Jalan, Nomor Rumah, RT/RW, Kelurahan, Kecamatan, Kota/Kab, Provinsi, Kode Pos" required="" class="form-control"></textarea>
+                                        <input name="lampiran_pemohon" type="text" required="" placeholder="Masukkan link GDrive Lampiran Berkas" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div id="kegiatanForm" style="display: none;">
+                                        <div class="form-group row">
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Kegiatan</label>
+                                            <div class="col-12 col-sm-8 col-lg-6">
+                                                <input name="kegiatan_pemohon" type="text" required="" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Awal Kegiatan</label>
+                                            <div class="col-12 col-sm-8 col-lg-6">
+                                                <input name="durasi_awal_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker5" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Akhir Kegiatan</label>
+                                            <div class="col-12 col-sm-8 col-lg-6">
+                                                <input name="durasi_akhir_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker6" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row hidden">
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal & Waktu Permohonan</label>
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                        <div name="waktu_permohonan" class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#datetimepicker7" placeholder="MM/DD/YYYY HH:mm:ss"/>
+                                        </div>
                                         </div>
                                     </div>
                                     <div class="form-group row text-right">
                                         <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
-                                            <button type="submit" class="btn btn-space btn-primary">Submit</button>
+                                            <button name="submit" type="submit" class="btn btn-space btn-primary" class="form-control">Submit</button>
                                             <button class="btn btn-space btn-secondary">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
+                                <?php
+                                    // Enable error reporting for debugging
+                                    error_reporting(E_ALL);
+                                    ini_set('display_errors', 1);
+
+                                    // Database connection
+                                    $servername = "localhost";
+                                    $username = "root";
+                                    $password = "";
+                                    $dbname = "e-office";
+
+                                    $conn = new mysqli($servername, $username, $password, $dbname);
+
+                                    if ($conn->connect_error) {
+                                        die("Connection failed: " . $conn->connect_error);
+                                    }
+
+                                    // Function to get POST data safely
+                                    function getPostData($key) {
+                                        return isset($_POST[$key]) ? $_POST[$key] : '';
+                                    }
+
+                                    // Check if form is submitted
+                                    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+                                        echo "<p>Form has been submitted.</p>"; // Debugging output
+
+                                        // Retrieve form data
+                                        $nama_general = getPostData('nama_general');
+                                        $telp_pemohon = getPostData('telp_pemohon');
+                                        $email_pemohon = getPostData('email_pemohon');
+                                        $jenis_permohonan = getPostData('jenis_permohonan');
+                                        $nama_pemohon = getPostData('nama_pemohon');
+                                        $tempatlahir_pemohon = getPostData('tempatlahir_pemohon');
+                                        $ttl_pemohon = getPostData('ttl_pemohon');
+                                        $nisn_pemohon = getPostData('nisn_pemohon');
+                                        $nis_pemohon = getPostData('nis_pemohon');
+                                        $kelas_pemohon = getPostData('kelas_pemohon');
+                                        $keperluan_pemohon = getPostData('keperluan_pemohon');
+                                        $lampiran_pemohon = getPostData('lampiran_pemohon');
+                                        $kegiatan_pemohon = getPostData('kegiatan_pemohon');
+                                        $durasi_awal_pemohon = getPostData('durasi_awal_pemohon');
+                                        $durasi_akhir_pemohon = getPostData('durasi_akhir_pemohon');
+
+                                        // Generate no_permohonan
+                                        $sql = "SELECT COUNT(*) AS total FROM surat";
+                                        $result = $conn->query($sql);
+                                        $row = $result->fetch_assoc();
+                                        $total = $row['total'] + 1;
+                                        $no_permohonan = "id00" . str_pad($total, 2, "0", STR_PAD_LEFT);
+
+                                        // Set default values
+                                        $status_permohonan = "Menunggu Konfirmasi";
+                                        $no_surat = "";
+                                        $waktu_permohonan = date("Y-m-d H:i:s");
+
+                                        // Insert data into the database
+                                        $sql = "INSERT INTO surat (nama_general, telp_pemohon, email_pemohon, jenis_permohonan, no_permohonan, no_surat, nama_pemohon, tempatlahir_pemohon, ttl_pemohon, nisn_pemohon, nis_pemohon, kelas_pemohon, keperluan_pemohon, lampiran_pemohon, kegiatan_pemohon, durasi_awal_pemohon, durasi_akhir_pemohon, waktu_permohonan, status_permohonan) 
+                                        VALUES ('$nama_general', '$telp_pemohon', '$email_pemohon', '$jenis_permohonan', '$no_permohonan', '$no_surat', '$nama_pemohon', '$tempatlahir_pemohon', '$ttl_pemohon', '$nisn_pemohon', '$nis_pemohon', '$kelas_pemohon', '$keperluan_pemohon', '$lampiran_pemohon', '$kegiatan_pemohon', '$durasi_awal_pemohon', '$durasi_akhir_pemohon', '$waktu_permohonan', '$status_permohonan')";
+
+                                        if ($conn->query($sql) === TRUE) {
+                                            // Redirect to a success page
+                                            header("Location: surat.php");
+                                            exit();
+                                        } else {
+                                            echo "Error: " . $sql . "<br>" . $conn->error;
+                                        }
+                                    }
+
+                                    $conn->close();
+                                    ?>
                             </div>
                         </div>
                     </div>
@@ -369,6 +507,7 @@
     <script src="../assets/vendor/datepicker/tempusdominus-bootstrap-4.js"></script>
     <script src="../assets/vendor/datepicker/datepicker.js"></script>
     <script src="../assets/vendor/parsley/parsley.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <!-- Form Validity -->
     <script>
     $('#form').parsley();
@@ -393,5 +532,29 @@
         }, false);
     })();
     </script>
+    <style>
+    .hidden {
+        display: none !important;
+    }
+    </style>
+    <script>
+    $(document).ready(function(){
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+    });
+    </script>
+    <script>
+    document.getElementById('inputGroupSelect01').addEventListener('change', function() {
+        var kegiatanForm = document.getElementById('kegiatanForm');
+        if (this.value === '4' || this.value === '7') {
+            kegiatanForm.style.display = 'block';
+        } else {
+            kegiatanForm.style.display = 'none';
+        }
+    });
+</script>
   </body>
 </html>
