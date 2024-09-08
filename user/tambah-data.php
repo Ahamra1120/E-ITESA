@@ -218,7 +218,7 @@
                             <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])): ?>
                                 <p>Form has been submitted.</p>
                             <?php endif; ?>
-                            <form id="pengajuanForm" action="" method="POST">
+                            <form id="pengajuanForm" action="tambah-data.php" method="POST">
                             <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
@@ -243,26 +243,26 @@
                                       <div class="col-12 col-sm-8 col-lg-6">
                                           <select name="jenis_permohonan" class="custom-select" id="inputGroupSelect01">
                                               <option selected>Silahkan Pilih...</option>
-                                              <option value="1">Surat Keterangan Aktif Siswa</option>
-                                              <option value="2">Surat Keterangan Kelakuan Baik</option>
-                                              <option value="3">Surat Keterangan Rekomendasi Siswa</option>
-                                              <option value="4">Surat Keterangan Dispensasi</option>
-                                              <option value="5">Surat Keterangan Peringkat</option>
-                                              <option value="5">Surat Keterangan Prestasi</option>
-                                              <option value="5">Surat Tugas Lomba Siswa</option>
+                                              <option value="Surat Keterangan Aktif Siswa">Surat Keterangan Aktif Siswa</option>
+                                              <option value="Surat Keterangan Kelakuan Baik">Surat Keterangan Kelakuan Baik</option>
+                                              <option value="Surat Keterangan Rekomendasi Siswa">Surat Keterangan Rekomendasi Siswa</option>
+                                              <option value="Surat Keterangan Dispensasi">Surat Keterangan Dispensasi</option>
+                                              <option value="Surat Keterangan Peringkat">Surat Keterangan Peringkat</option>
+                                              <option value="Surat Keterangan Prestasi">Surat Keterangan Prestasi</option>
+                                              <option value="Surat Tugas Lomba Siswa">Surat Tugas Lomba Siswa</option>
                                           </select>
                                       </div>
                                   </div>
                                     <div class="form-group row hidden">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Permohonan</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="no_permohonan" type="text" required="" placeholder="HIDDEN" class="form-control">
+                                            <input name="no_permohonan" type="text" placeholder="HIDDEN" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row hidden">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Surat</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="no_surat" type="text" required="" placeholder="HIDDEN" class="form-control">
+                                            <input name="no_surat" type="text" placeholder="HIDDEN" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -342,7 +342,7 @@
                                         <div class="form-group row">
                                             <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Kegiatan</label>
                                             <div class="col-12 col-sm-8 col-lg-6">
-                                                <input name="kegiatan_pemohon" type="text" required="" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control">
+                                                <input name="kegiatan_pemohon" type="text" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -379,13 +379,7 @@
                                     ini_set('display_errors', 1);
 
                                     // Database connection
-                                    $servername = "localhost";
-                                    $username = "root";
-                                    $password = "";
-                                    $dbname = "e-office";
-
-                                    $conn = new mysqli($servername, $username, $password, $dbname);
-
+                                    include("../connect.php");
                                     if ($conn->connect_error) {
                                         die("Connection failed: " . $conn->connect_error);
                                     }
@@ -549,7 +543,7 @@
     <script>
     document.getElementById('inputGroupSelect01').addEventListener('change', function() {
         var kegiatanForm = document.getElementById('kegiatanForm');
-        if (this.value === '4' || this.value === '7') {
+        if (this.value === 'Surat Keterangan Dispensasi' || this.value === 'Surat Tugas Lomba Siswa') {
             kegiatanForm.style.display = 'block';
         } else {
             kegiatanForm.style.display = 'none';
