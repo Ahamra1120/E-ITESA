@@ -21,6 +21,11 @@
     document.getElementById('pengajuanForm').submit();
 }
     </script>
+    <style>
+    .required-asterisk {
+        color: red;
+    }
+    </style>
     <title>E-ITESA - Permohonan Surat</title>
   </head>
 
@@ -220,26 +225,26 @@
                             <?php endif; ?>
                             <form id="pengajuanForm" action="tambah-data.php" method="POST">
                             <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <input name="nama_general" type="text" required="" placeholder="" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Telepon (WA)</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Telepon (WA) <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <input name="telp_pemohon" type="text" required="" placeholder="" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Email</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Email <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <input name="email_pemohon" type="text" required="" placeholder="" class="form-control">
                                         </div>
                                 </div>
                                 <h5 class="card-header">Formulir Permohonan Surat</h5>
                                   <div class="form-group row">
-                                      <label class="col-12 col-sm-3 col-form-label text-sm-right">Jenis Permohonan Surat</label>
+                                      <label class="col-12 col-sm-3 col-form-label text-sm-right">Jenis Permohonan Surat <span class="required-asterisk">*</label>
                                       <div class="col-12 col-sm-8 col-lg-6">
                                           <select name="jenis_permohonan" class="custom-select" id="inputGroupSelect01">
                                               <option selected>Silahkan Pilih...</option>
@@ -266,25 +271,25 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <input name="nama_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tempat Lahir</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tempat Lahir <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <input name="tempatlahir_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Lahir</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Lahir <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <input name="ttl_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker4" />
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">NISN</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">NISN <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <input name="nisn_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
@@ -295,7 +300,7 @@
                                             <input name="nis_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div><div class="form-group row">
-                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas</label>
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas <span class="required-asterisk">*</label>
                                     <div class="col-12 col-sm-8 col-lg-6">
                                         <select name="kelas_pemohon" class="custom-select" id="inputGroupSelect01">
                                             <option selected>Silahkan Pilih...</option>
@@ -327,32 +332,32 @@
                                     </div>
                                 </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Keperluan (Deskripsi)</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Keperluan (Deskripsi) <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                             <textarea name="keperluan_pemohon" required="" placeholder="Masukkan keperluan untuk pembuatan surat" class="form-control"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Lampiran Berkas Pendukung</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Lampiran Berkas Pendukung <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
                                         <input name="lampiran_pemohon" type="text" required="" placeholder="Masukkan link GDrive Lampiran Berkas" class="form-control">
                                         </div>
                                     </div>
                                     <div id="kegiatanForm" style="display: none;">
                                         <div class="form-group row">
-                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Kegiatan</label>
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Kegiatan <span class="required-asterisk">*</label>
                                             <div class="col-12 col-sm-8 col-lg-6">
                                                 <input name="kegiatan_pemohon" type="text" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Awal Kegiatan</label>
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Awal Kegiatan <span class="required-asterisk">*</label>
                                             <div class="col-12 col-sm-8 col-lg-6">
                                                 <input name="durasi_awal_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker5" />
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Akhir Kegiatan</label>
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Akhir Kegiatan <span class="required-asterisk">*</label>
                                             <div class="col-12 col-sm-8 col-lg-6">
                                                 <input name="durasi_akhir_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker6" />
                                             </div>
