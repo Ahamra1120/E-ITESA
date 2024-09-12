@@ -223,7 +223,7 @@
                             <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])): ?>
                                 <p>Form has been submitted.</p>
                             <?php endif; ?>
-                            <form id="pengajuanForm" action="tambah-data.php" method="POST">
+                            <form id="pengajuanForm" action="tambah-data.php" method="POST" enctype="multipart/form-data">
                             <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
@@ -340,7 +340,7 @@
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Lampiran Berkas Pendukung <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="file" name="lampiran" required="" accept="application/pdf" class="form-control">
+                                            <input type="file" name="lampiran_pemohon" required="" accept="application/pdf" class="form-control">
                                         </div>
                                     </div>
                                     <div id="kegiatanForm" style="display: none;">
@@ -379,94 +379,97 @@
                                     </div>
                                 </form>
                                 <?php
-                                    // Enable error reporting for debugging
-                                    error_reporting(E_ALL);
-                                    ini_set('display_errors', 1);
+                                  // Enable error reporting for debugging
+                                  error_reporting(E_ALL);
+                                  ini_set('display_errors', 1);
 
-                                    // Database connection
-                                    include("../connect.php");
-                                    if ($conn->connect_error) {
-                                        die("Connection failed: " . $conn->connect_error);
-                                    }
+                                  // Database connection
+                                  include("../connect.php");
+                                  if ($conn->connect_error) {
+                                      die("Connection failed: " . $conn->connect_error);
+                                  }
 
-                                    // Function to get POST data safely
-                                    function getPostData($key) {
-                                        return isset($_POST[$key]) ? $_POST[$key] : '';
-                                    }
+                                  // Function to get POST data safely
+                                  function getPostData($key) {
+                                      return isset($_POST[$key]) ? $_POST[$key] : '';
+                                  }
 
-                                    // Check if form is submitted
-                                    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-                                        echo "<p>Form has been submitted.</p>"; // Debugging output
+                                  // Check if form is submitted
+                                  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+                                      echo "<p>Form has been submitted.</p>"; // Debugging output
 
-                                        // Retrieve form data
-                                        $nama_general = getPostData('nama_general');
-                                        $telp_pemohon = getPostData('telp_pemohon');
-                                        $email_pemohon = getPostData('email_pemohon');
-                                        $jenis_permohonan = getPostData('jenis_permohonan');
-                                        $nama_pemohon = getPostData('nama_pemohon');
-                                        $tempatlahir_pemohon = getPostData('tempatlahir_pemohon');
-                                        $ttl_pemohon = getPostData('ttl_pemohon');
-                                        $nisn_pemohon = getPostData('nisn_pemohon');
-                                        $nis_pemohon = getPostData('nis_pemohon');
-                                        $kelas_pemohon = getPostData('kelas_pemohon');
-                                        $keperluan_pemohon = getPostData('keperluan_pemohon');
-                                        $lampiran_pemohon = getPostData('lampiran_pemohon');
-                                        $kegiatan_pemohon = getPostData('kegiatan_pemohon');
-                                        $durasi_awal_pemohon = getPostData('durasi_awal_pemohon');
-                                        $durasi_akhir_pemohon = getPostData('durasi_akhir_pemohon');
+                                      // Retrieve form data
+                                      $nama_general = getPostData('nama_general');
+                                      $telp_pemohon = getPostData('telp_pemohon');
+                                      $email_pemohon = getPostData('email_pemohon');
+                                      $jenis_permohonan = getPostData('jenis_permohonan');
+                                      $nama_pemohon = getPostData('nama_pemohon');
+                                      $tempatlahir_pemohon = getPostData('tempatlahir_pemohon');
+                                      $ttl_pemohon = getPostData('ttl_pemohon');
+                                      $nisn_pemohon = getPostData('nisn_pemohon');
+                                      $nis_pemohon = getPostData('nis_pemohon');
+                                      $kelas_pemohon = getPostData('kelas_pemohon');
+                                      $keperluan_pemohon = getPostData('keperluan_pemohon');
+                                      $kegiatan_pemohon = getPostData('kegiatan_pemohon');
+                                      $durasi_awal_pemohon = getPostData('durasi_awal_pemohon');
+                                      $durasi_akhir_pemohon = getPostData('durasi_akhir_pemohon');
 
-                                        // Generate no_permohonan
-                                        $sql = "SELECT COUNT(*) AS total FROM surat";
-                                        $result = $conn->query($sql);
-                                        $row = $result->fetch_assoc();
-                                        $total = $row['total'] + 1;
-                                        $no_permohonan = "id00" . str_pad($total, 2, "0", STR_PAD_LEFT);
+                                      // Generate no_permohonan
+                                      $sql = "SELECT COUNT(*) AS total FROM surat";
+                                      $result = $conn->query($sql);
+                                      $row = $result->fetch_assoc();
+                                      $total = $row['total'] + 1;
+                                      $no_permohonan = "id00" . str_pad($total, 2, "0", STR_PAD_LEFT);
 
-                                        // Set default values
-                                        $status_permohonan = "Menunggu Konfirmasi";
-                                        $no_surat = "";
-                                        $waktu_permohonan = date("Y-m-d H:i:s");
+                                      // Handle file upload
+                                      if (isset($_FILES['lampiran_pemohon']) && $_FILES['lampiran_pemohon']['error'] == UPLOAD_ERR_OK) {
+                                          $fileTmpPath = $_FILES['lampiran_pemohon']['tmp_name'];
+                                          $fileName = $_FILES['lampiran_pemohon']['name'];
+                                          $fileSize = $_FILES['lampiran_pemohon']['size'];
+                                          $fileType = $_FILES['lampiran_pemohon']['type'];
+                                          $fileNameCmps = explode(".", $fileName);
+                                          $fileExtension = strtolower(end($fileNameCmps));
 
-                                        // Insert data into the database
-                                        $sql = "INSERT INTO surat (nama_general, telp_pemohon, email_pemohon, jenis_permohonan, no_permohonan, no_surat, nama_pemohon, tempatlahir_pemohon, ttl_pemohon, nisn_pemohon, nis_pemohon, kelas_pemohon, keperluan_pemohon, lampiran_pemohon, kegiatan_pemohon, durasi_awal_pemohon, durasi_akhir_pemohon, waktu_permohonan, status_permohonan) 
-                                        VALUES ('$nama_general', '$telp_pemohon', '$email_pemohon', '$jenis_permohonan', '$no_permohonan', '$no_surat', '$nama_pemohon', '$tempatlahir_pemohon', '$ttl_pemohon', '$nisn_pemohon', '$nis_pemohon', '$kelas_pemohon', '$keperluan_pemohon', '$lampiran_pemohon', '$kegiatan_pemohon', '$durasi_awal_pemohon', '$durasi_akhir_pemohon', '$waktu_permohonan', '$status_permohonan')";
+                                          // Generate new file name
+                                          $newFileName = 'lampiran-' . $no_permohonan . '.' . $fileExtension;
 
-                                        if ($conn->query($sql) === TRUE) {
-                                            // Redirect to a success page
-                                            header("Location: surat.php");
-                                            exit();
-                                        } else {
-                                            echo "Error: " . $sql . "<br>" . $conn->error;
-                                        }
-                                    }
+                                          // Directory where the file will be uploaded
+                                          $uploadFileDir = '../assets/lampiran/user/';
+                                          $dest_path = $uploadFileDir . $newFileName;
 
-                                    $conn->close();
+                                          // Move the file to the specified directory
+                                          if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                                              $lampiran_pemohon = $newFileName; // Update the file name to be saved in the database
+                                          } else {
+                                              echo "There was an error moving the uploaded file.";
+                                              exit();
+                                          }
+                                      } else {
+                                          echo "No file uploaded or there was an upload error.";
+                                          exit();
+                                      }
 
-                                    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                                        // Direktori tujuan untuk menyimpan file yang diunggah
-                                        $target_dir = "../assets/lampiran/";
-                                        $target_file = $target_dir . basename($_FILES["lampiran"]["name"]);
-                                        $uploadOk = 1;
-                                        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                                    
-                                        // Periksa apakah file adalah PDF
-                                        if ($fileType != "pdf") {
-                                            echo "Maaf, hanya file PDF yang diperbolehkan.";
-                                            $uploadOk = 0;
-                                        }
-                                    
-                                        // Periksa apakah $uploadOk adalah 0 karena kesalahan
-                                        if ($uploadOk == 0) {
-                                            echo "Maaf, file Anda tidak dapat diunggah.";
-                                        } else {
-                                            if (move_uploaded_file($_FILES["lampiran"]["tmp_name"], $target_file)) {
-                                                echo "File ". htmlspecialchars(basename($_FILES["lampiran"]["name"])). " telah berhasil diunggah.";
-                                            } else {
-                                                echo "Maaf, terjadi kesalahan saat mengunggah file Anda.";
-                                            }
-                                        }
-                                    }
-                                    ?>
+                                      // Set default values
+                                      $status_permohonan = "Menunggu Konfirmasi";
+                                      $no_surat = "";
+                                      $datetime = new DateTime("now", new DateTimeZone("Asia/Jakarta"));
+                                      $waktu_permohonan = $datetime->format("Y-m-d H:i:s");
+
+                                      // Insert data into the database
+                                      $sql = "INSERT INTO surat (nama_general, telp_pemohon, email_pemohon, jenis_permohonan, no_permohonan, no_surat, nama_pemohon, tempatlahir_pemohon, ttl_pemohon, nisn_pemohon, nis_pemohon, kelas_pemohon, keperluan_pemohon, lampiran_pemohon, kegiatan_pemohon, durasi_awal_pemohon, durasi_akhir_pemohon, waktu_permohonan, status_permohonan) 
+                                      VALUES ('$nama_general', '$telp_pemohon', '$email_pemohon', '$jenis_permohonan', '$no_permohonan', '$no_surat', '$nama_pemohon', '$tempatlahir_pemohon', '$ttl_pemohon', '$nisn_pemohon', '$nis_pemohon', '$kelas_pemohon', '$keperluan_pemohon', '$lampiran_pemohon', '$kegiatan_pemohon', '$durasi_awal_pemohon', '$durasi_akhir_pemohon', '$waktu_permohonan', '$status_permohonan')";
+
+                                      if ($conn->query($sql) === TRUE) {
+                                          // Redirect to a success page
+                                          header("Location: surat.php");
+                                          exit();
+                                      } else {
+                                          echo "Error: " . $sql . "<br>" . $conn->error;
+                                      }
+                                  }
+
+                                  $conn->close();
+                                  ?>
                             </div>
                         </div>
                     </div>
