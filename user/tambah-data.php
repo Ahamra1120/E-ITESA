@@ -297,7 +297,7 @@
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">NIS</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nis_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="nis_pemohon" type="number" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
                                         </div>
                                     </div><div class="form-group row">
                                     <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas <span class="required-asterisk">*</label>
@@ -340,7 +340,7 @@
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Lampiran Berkas Pendukung <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                        <input name="lampiran_pemohon" type="text" required="" placeholder="Masukkan link GDrive Lampiran Berkas" class="form-control">
+                                            <input type="file" name="lampiran" required="" accept="application/pdf" class="form-control">
                                         </div>
                                     </div>
                                     <div id="kegiatanForm" style="display: none;">
@@ -441,6 +441,31 @@
                                     }
 
                                     $conn->close();
+
+                                    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                                        // Direktori tujuan untuk menyimpan file yang diunggah
+                                        $target_dir = "../assets/lampiran/";
+                                        $target_file = $target_dir . basename($_FILES["lampiran"]["name"]);
+                                        $uploadOk = 1;
+                                        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                                    
+                                        // Periksa apakah file adalah PDF
+                                        if ($fileType != "pdf") {
+                                            echo "Maaf, hanya file PDF yang diperbolehkan.";
+                                            $uploadOk = 0;
+                                        }
+                                    
+                                        // Periksa apakah $uploadOk adalah 0 karena kesalahan
+                                        if ($uploadOk == 0) {
+                                            echo "Maaf, file Anda tidak dapat diunggah.";
+                                        } else {
+                                            if (move_uploaded_file($_FILES["lampiran"]["tmp_name"], $target_file)) {
+                                                echo "File ". htmlspecialchars(basename($_FILES["lampiran"]["name"])). " telah berhasil diunggah.";
+                                            } else {
+                                                echo "Maaf, terjadi kesalahan saat mengunggah file Anda.";
+                                            }
+                                        }
+                                    }
                                     ?>
                             </div>
                         </div>
