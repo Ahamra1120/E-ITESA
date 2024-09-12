@@ -223,7 +223,7 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
                 <div class="card">
                   <h5 class="card-header d-flex justify-content-between align-items-center">
-                    Status Permohonan <a href="tambah-data.php" class="btn btn-space btn-primary"><i class="fas fa-plus-square"></i> Tambah Permohonan</a>
+                    Status Permohonan <a href="tambah-surat.php" class="btn btn-space btn-primary"><i class="fas fa-plus-square"></i> Tambah Permohonan</a>
                   </h5>
                   <div class="card-body p-0">
                     <div class="table-responsive">
