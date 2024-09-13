@@ -223,7 +223,7 @@
                             <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])): ?>
                                 <p>Form has been submitted.</p>
                             <?php endif; ?>
-                            <form id="pengajuanForm" action="tambah-data.php" method="POST" enctype="multipart/form-data">
+                            <form id="pengajuanForm" action="tambah-surat.php" method="POST" enctype="multipart/form-data">
                             <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap <span class="required-asterisk">*</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
@@ -413,6 +413,15 @@
                                       $kegiatan_pemohon = getPostData('kegiatan_pemohon');
                                       $durasi_awal_pemohon = getPostData('durasi_awal_pemohon');
                                       $durasi_akhir_pemohon = getPostData('durasi_akhir_pemohon');
+
+                                      // Ubah format tanggal dari MM/DD/YYYY ke YYYY/MM/DD
+                                      $date = DateTime::createFromFormat('m/d/Y', $ttl_pemohon);
+                                      if ($date) {
+                                          $ttl_pemohon = $date->format('Y/m/d');
+                                      } else {
+                                          echo "Invalid date format!";
+                                          exit();
+                                      }
 
                                       // Generate no_permohonan
                                       $sql = "SELECT COUNT(*) AS total FROM surat";

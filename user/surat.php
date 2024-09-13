@@ -12,7 +12,7 @@ try {
 }
 
 // Fetch data from the surat table
-$sql = 'SELECT no_permohonan, jenis_permohonan, waktu_permohonan, status_permohonan FROM surat';
+$sql = 'SELECT id, no_permohonan, jenis_permohonan, waktu_permohonan, status_permohonan FROM surat';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -239,37 +239,37 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
                           </tr>
                         </thead>
                         <tbody>
-                          <?php
-                          $no = 1;
-                          foreach ($suratData as $row) {
-                              echo '<tr>';
-                              echo '<td>' . $no++ . '</td>';
-                              echo '<td>' . htmlspecialchars($row['no_permohonan']) . '</td>';
-                              echo '<td>' . htmlspecialchars($row['jenis_permohonan']) . '</td>';
-                              echo '<td>' . htmlspecialchars($row['waktu_permohonan']) . '</td>';
-                              echo '<td>';
-                              switch ($row['status_permohonan']) {
-                                  case 'Ditolak':
-                                      echo '<span class="badge-dot badge-danger mr-1"></span>Ditolak';
-                                      break;
-                                  case 'Menunggu Konfirmasi':
-                                      echo '<span class="badge-dot badge-primary mr-1"></span>Menunggu Approval';
-                                      break;
-                                  case 'Diterima':
-                                      echo '<span class="badge-dot badge-success mr-1"></span>Diterima';
-                                      break;
-                                  case 'Diproses':
-                                      echo '<span class="badge-dot badge-brand mr-1"></span>Diproses';
-                                      break;
-                                  default:
-                                      echo '<span class="badge-dot badge-secondary mr-1"></span>Unknown';
-                                      break;
-                              }
-                              echo '</td>';
-                              echo '<td><a href="proses-surat.html" class="btn btn-primary btn-sm" role="button" aria-disabled="true"><i class="fas fa-edit"></i> Detail</a></td>';
-                              echo '</tr>';
-                          }
-                          ?>
+                        <?php
+                        $no = 1;
+                        foreach ($suratData as $row) {
+                            echo '<tr>';
+                            echo '<td>' . $no++ . '</td>';
+                            echo '<td>' . htmlspecialchars($row['no_permohonan']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['jenis_permohonan']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['waktu_permohonan']) . '</td>';
+                            echo '<td>';
+                            switch ($row['status_permohonan']) {
+                                case 'Ditolak':
+                                    echo '<span class="badge-dot badge-danger mr-1"></span>Ditolak';
+                                    break;
+                                case 'Menunggu Konfirmasi':
+                                    echo '<span class="badge-dot badge-primary mr-1"></span>Menunggu Approval';
+                                    break;
+                                case 'Diterima':
+                                    echo '<span class="badge-dot badge-success mr-1"></span>Diterima';
+                                    break;
+                                case 'Diproses':
+                                    echo '<span class="badge-dot badge-brand mr-1"></span>Diproses';
+                                    break;
+                                default:
+                                    echo '<span class="badge-dot badge-secondary mr-1"></span>Unknown';
+                                    break;
+                            }
+                            echo '</td>';
+                            echo '<td><a href="detail-surat.php?id=' . htmlspecialchars($row['id']) . '" class="btn btn-primary btn-sm" role="button"><i class="fas fa-edit"></i> Detail</a></td>';
+                            echo '</tr>';
+                        }
+                        ?>
                         </tbody>
                       </table>
                     </div>
