@@ -21,6 +21,15 @@
     document.getElementById('pengajuanForm').submit();
 }
     </script>
+    
+  <style>
+    .custom-marquee {
+    font-size: 18px;
+    color: white;
+    padding-left: 264px;
+    background-color: red;
+}
+  </style>
     <style>
     .required-asterisk {
         color: red;
@@ -186,7 +195,8 @@
       <!-- wrapper  -->
       <!-- ============================================================== -->
       <div class="dashboard-wrapper">
-        <div class="dashboard-ecommerce">
+      <marquee class="custom-marquee"><b><i class="fas fa-exclamation-triangle"></i> Pegawai MAN 2 Jakarta Timur tidak menerima GRATIFIKASI dalam melaksanakan tugas. <i class="fas fa-exclamation-triangle"></i><b></marquee>
+      <div class="dashboard-ecommerce">
           <div class="container-fluid dashboard-content">
             <!-- ============================================================== -->
             <!-- pageheader  -->

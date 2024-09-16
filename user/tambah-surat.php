@@ -16,11 +16,21 @@
     <link rel="stylesheet" href="../assets/vendor/charts/c3charts/c3.css" />
     <link rel="stylesheet" href="../assets/vendor/fonts/flag-icon-css/flag-icon.min.css" />
     <link rel="stylesheet" href="../assets/vendor/datepicker/tempusdominus-bootstrap-4.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function submitForms() {
     document.getElementById('pengajuanForm').submit();
 }
     </script>
+    
+  <style>
+    .custom-marquee {
+    font-size: 18px;
+    color: white;
+    padding-left: 264px;
+    background-color: red;
+}
+  </style>
     <style>
     .required-asterisk {
         color: red;
@@ -186,7 +196,8 @@
       <!-- wrapper  -->
       <!-- ============================================================== -->
       <div class="dashboard-wrapper">
-        <div class="dashboard-ecommerce">
+      <marquee class="custom-marquee"><b><i class="fas fa-exclamation-triangle"></i> Pegawai MAN 2 Jakarta Timur tidak menerima GRATIFIKASI dalam melaksanakan tugas. <i class="fas fa-exclamation-triangle"></i><b></marquee>
+      <div class="dashboard-ecommerce">
           <div class="container-fluid dashboard-content">
             <!-- ============================================================== -->
             <!-- pageheader  -->
@@ -221,8 +232,8 @@
                             <div class="card-body">
                             <h5 class="card-header">Biodata Pemohon</h5>
                             <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])): ?>
-                                <p>Form has been submitted.</p>
-                            <?php endif; ?>
+                              echo "<script>alert('data berhasil disimpan.');window.location='surat.php';</script>";
+                              <?php endif; ?>
                             <form id="pengajuanForm" action="tambah-surat.php" method="POST" enctype="multipart/form-data">
                             <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap <span class="required-asterisk">*</label>
@@ -373,7 +384,7 @@
                                     </div>
                                     <div class="form-group row text-right">
                                         <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
-                                            <button name="submit" type="submit" class="btn btn-space btn-primary" class="form-control">Submit</button>
+                                            <button id="submitBtn" class="btn btn-space btn-primary" class="form-control">Submit</button>
                                             <button class="btn btn-space btn-secondary">Cancel</button>
                                         </div>
                                     </div>
@@ -395,9 +406,7 @@
                                   }
 
                                   // Check if form is submitted
-                                  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-                                      echo "<p>Form has been submitted.</p>"; // Debugging output
-
+                                  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                       // Retrieve form data
                                       $nama_general = getPostData('nama_general');
                                       $telp_pemohon = getPostData('telp_pemohon');
@@ -592,5 +601,106 @@
         }
     });
 </script>
+<script>
+                document.getElementById('submitBtn').addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent form submission
+
+                    // Validate form data
+                    const form = document.getElementById('pengajuanForm');
+                    const formData = new FormData(form);
+                    let isValid = true;
+                    let specialCondition = false;
+
+                    // Check for special condition
+                    if (formData.get('jenis_surat') === 'Surat Keterangan Dispensasi' || formData.get('jenis_surat') === 'Surat Tugas Lomba Siswa') {
+                        specialCondition = true;
+                    }
+
+                    formData.forEach((value, key) => {
+                        if (!value && key !== 'no_permohonan' && key !== 'no_surat' && key !== 'waktu_permohonan') {
+                            if (specialCondition && (key === 'kegiatan_pemohon' || key === 'durasi_awal_pemohon' || key === 'durasi_akhir_pemohon')) {
+                                // Skip validation for these fields under special condition
+                                return;
+                            }
+                            isValid = false;
+                        }
+                    });
+
+                    if (!isValid) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Semua field harus diisi!',
+                            icon: 'error'
+                        });
+                        return;
+                    }
+
+                    const swalWithBootstrapButtons = Swal.mixin({
+                        customClass: {
+                            confirmButton: 'btn btn-success',
+                            cancelButton: 'btn btn-danger'
+                        },
+                        buttonsStyling: false
+                    });
+
+                    swalWithBootstrapButtons.fire({
+                        title: 'Apakah anda yakin untuk menyimpan data?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, saya yakin!',
+                        cancelButton: 'Tidak, saya ingin mengecek kembali'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Submit the form data via AJAX
+                            $.ajax({
+                                url: 'tambah-surat.php', // PHP script to handle form submission
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function(response) {
+                                    let timerInterval;
+                                    Swal.fire({
+                                        title: 'Data anda berhasil tersimpan!',
+                                        html: 'Anda akan diarahkan ke halaman utama dalam <b></b> milisekon.',
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        icon: 'success',
+                                        didOpen: () => {
+                                            Swal.showLoading();
+                                            const timer = Swal.getPopup().querySelector('b');
+                                            timerInterval = setInterval(() => {
+                                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                            }, 100);
+                                        },
+                                        willClose: () => {
+                                            clearInterval(timerInterval);
+                                        }
+                                    }).then((result) => {
+                                        if (result.dismiss === Swal.DismissReason.timer) {
+                                            console.log('I was closed by the timer');
+                                            // Redirect to the main page
+                                            window.location.href = 'index.php';
+                                        }
+                                    });
+                                },
+                                error: function(xhr, status, error) {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: 'Terjadi kesalahan saat menyimpan data.',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            swalWithBootstrapButtons.fire({
+                                title: 'Cancelled',
+                                text: 'Your imaginary file is safe :)',
+                                icon: 'error'
+                            });
+                        }
+                    });
+                });
+            </script>
   </body>
 </html>

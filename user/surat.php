@@ -34,6 +34,15 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="../assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" />
     <link rel="stylesheet" href="../assets/vendor/charts/c3charts/c3.css" />
     <link rel="stylesheet" href="../assets/vendor/fonts/flag-icon-css/flag-icon.min.css" />
+    
+  <style>
+    .custom-marquee {
+    font-size: 18px;
+    color: white;
+    padding-left: 264px;
+    background-color: red;
+}
+  </style>
     <title>E-ITESA - Permohonan Surat</title>
   </head>
 
@@ -194,7 +203,8 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <!-- wrapper  -->
       <!-- ============================================================== -->
       <div class="dashboard-wrapper">
-        <div class="dashboard-ecommerce">
+      <marquee class="custom-marquee"><b><i class="fas fa-exclamation-triangle"></i> Pegawai MAN 2 Jakarta Timur tidak menerima GRATIFIKASI dalam melaksanakan tugas. <i class="fas fa-exclamation-triangle"></i><b></marquee>
+      <div class="dashboard-ecommerce">
           <div class="container-fluid dashboard-content">
             <!-- ============================================================== -->
             <!-- pageheader  -->

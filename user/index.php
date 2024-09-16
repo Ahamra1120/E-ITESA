@@ -58,8 +58,16 @@ $conn->close();
   <link href="../assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" rel="stylesheet"/>
   <link href="../assets/vendor/charts/c3charts/c3.css" rel="stylesheet"/>
   <link href="../assets/vendor/fonts/flag-icon-css/flag-icon.min.css" rel="stylesheet"/>
+  <style>
+    .custom-marquee {
+    font-size: 18px;
+    color: white;
+    padding-left: 264px;
+    background-color: red;
+}
+  </style>
   <title>
-   E-ITESA Dashboard
+   E-Office Dashboard
   </title>
  </head>
  <body>
@@ -73,7 +81,7 @@ $conn->close();
    <div class="dashboard-header">
     <nav class="navbar navbar-expand-lg bg-white fixed-top">
      <br/>
-     <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
+     <img alt="Logo E-Office" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
      <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
       <span class="navbar-toggler-icon">
       </span>
@@ -327,6 +335,7 @@ $conn->close();
    <!-- wrapper  -->
    <!-- ============================================================== -->
    <div class="dashboard-wrapper">
+   <marquee class="custom-marquee"><b><i class="fas fa-exclamation-triangle"></i> Pegawai MAN 2 Jakarta Timur tidak menerima GRATIFIKASI dalam melaksanakan tugas. <i class="fas fa-exclamation-triangle"></i><b></marquee>
     <div class="dashboard-ecommerce">
      <div class="container-fluid dashboard-content">
       <!-- ============================================================== -->
@@ -336,12 +345,12 @@ $conn->close();
        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
         <div class="page-header">
          <h2 class="pageheader-title">
-          E-ITESA Dashboard
+          E-Office Dashboard
          </h2>
          <p class="pageheader-TEXT">
           Hello
           <?php echo $username; ?>
-          , welcome to E-ITESA Smart Administration Dashboard
+          , welcome to E-Office Smart Administration Dashboard
          </p>
          <div class="page-breadcrumb">
           <nav aria-label="breadcrumb">
@@ -352,7 +361,7 @@ $conn->close();
              </a>
             </li>
             <li aria-current="page" class="breadcrumb-item active">
-             E-ITESA
+             E-Office
             </li>
            </ol>
           </nav>
@@ -365,7 +374,7 @@ $conn->close();
       <!-- ============================================================== -->
       <div class="">
        <div class="row justify-content-center">
-        <div class="card">
+        <!-- <div class="card">
          <div class="card-body">
           <div class="user-avatar text-center d-block">
            <img alt="User Avatar" class="rounded-circle user-avatar-xxl" src="../assets/images/avatar-1.jpg"/>
@@ -432,7 +441,7 @@ $conn->close();
            </form>
           </div>
          </div>
-        </div>
+        </div> -->
         <!-- Total -->
         <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
          <div class="card">
