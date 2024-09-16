@@ -607,38 +607,47 @@
 
                     // Validate form data
                     const form = document.getElementById('pengajuanForm');
-                    const formData = new FormData(form);
-                    let isValid = true;
-                    let specialCondition = false;
+const formData = new FormData(form);
+let isValid = true;
+let specialCondition = false;
 
-                    // Check for special condition
-                    if (formData.get('jenis_surat') === 'Surat Keterangan Dispensasi' || formData.get('jenis_surat') === 'Surat Tugas Lomba Siswa') {
-                        specialCondition = true;
-                    }
+// Cek apakah kondisi spesial aktif (untuk jenis surat tertentu)
+if (formData.get('jenis_permohonan') === 'Surat Keterangan Dispensasi' || formData.get('jenis_permohonan') === 'Surat Tugas Lomba Siswa') {
+    specialCondition = true;
+}
 
-                    formData.forEach((value, key) => {
-                        if (!value && key !== 'no_permohonan' && key !== 'no_surat' && key !== 'waktu_permohonan') {
-                            if (specialCondition && (key === 'kegiatan_pemohon' || key === 'durasi_awal_pemohon' || key === 'durasi_akhir_pemohon')) {
-                                // Skip validation for these fields under special condition
-                                return;
-                            }
-                            isValid = false;
-                        }
-                    });
+// Loop untuk memeriksa semua field form
+formData.forEach((value, key) => {
+    // Jika field kosong dan bukan no_permohonan, no_surat, atau waktu_permohonan
+    if (!value && key !== 'no_permohonan' && key !== 'no_surat' && key !== 'waktu_permohonan') {
+        // Jika kondisi spesial aktif, validasi khusus untuk kegiatan_pemohon, durasi_awal_pemohon, dan durasi_akhir_pemohon
+        if (specialCondition) {
+            if (key === 'kegiatan_pemohon' || key === 'durasi_awal_pemohon' || key === 'durasi_akhir_pemohon') {
+                isValid = false; // Jika tidak diisi pada kondisi spesial, tetap muncul error
+            }
+        } else {
+            // Jika tidak dalam kondisi spesial, skip validasi untuk kegiatan_pemohon, durasi_awal_pemohon, dan durasi_akhir_pemohon
+            if (key !== 'kegiatan_pemohon' && key !== 'durasi_awal_pemohon' && key !== 'durasi_akhir_pemohon') {
+                isValid = false;
+            }
+        }
+    }
+});
 
-                    if (!isValid) {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Semua field harus diisi!',
-                            icon: 'error'
-                        });
-                        return;
-                    }
+// Jika tidak valid, tampilkan error
+if (!isValid) {
+    Swal.fire({
+        title: 'Error',
+        text: 'Semua field harus diisi sesuai ketentuan!',
+        icon: 'error'
+    });
+    return;
+}
 
                     const swalWithBootstrapButtons = Swal.mixin({
                         customClass: {
-                            confirmButton: 'btn btn-success',
-                            cancelButton: 'btn btn-danger'
+                            confirmButton: 'btn btn-space btn-primary',
+                            cancelButton: 'btn btn-space btn-secondary'
                         },
                         buttonsStyling: false
                     });
@@ -680,7 +689,7 @@
                                         if (result.dismiss === Swal.DismissReason.timer) {
                                             console.log('I was closed by the timer');
                                             // Redirect to the main page
-                                            window.location.href = 'index.php';
+                                            window.location.href = 'surat.php';
                                         }
                                     });
                                 },
@@ -695,7 +704,6 @@
                         } else if (result.dismiss === Swal.DismissReason.cancel) {
                             swalWithBootstrapButtons.fire({
                                 title: 'Cancelled',
-                                text: 'Your imaginary file is safe :)',
                                 icon: 'error'
                             });
                         }
