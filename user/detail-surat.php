@@ -241,7 +241,10 @@
                         $ttl_pemohon = date('Y-m-d', strtotime($row['ttl_pemohon']));
                         ?>
                             <div class="card-body">
-                            <h5 class="card-header">Biodata Pemohon</h5>
+                            <h5 class="card-header d-flex justify-content-between align-items-center">Biodata Pemohon
+                            <div class="d-flex">
+                                <a href="form-surat.html" class="btn btn-space btn-warning disabled ml-auto"><i class="fas fa-edit"></i> Edit</a>
+                            </div></h5>
                             <form id="pengajuanForm"  method="POST">
                             <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
