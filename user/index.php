@@ -22,6 +22,7 @@ if ($result->num_rows > 0) {
   $name = $row["name"];
   $class = $row["class"];
   $telp = $row["telp"];
+  $nisn = $row["nisn"];
 
   // Periksa apakah data kosong atau "0", jika ya, ganti dengan pesan
   if (empty($name) || $name == "0") {
@@ -33,11 +34,15 @@ if ($result->num_rows > 0) {
   if (empty($telp) || $telp == "0") {
       $telp = "Data Telp Belum Terisi!";
   }
+  if (empty($nisn) || $nisn == "0") {
+      $nisn = "Data NISN Belum Terisi!";
+  }
 } else {
   // Handle kasus jika tidak ada data yang ditemukan (sama seperti sebelumnya)
   $name = "Data tidak ditemukan"; 
   $class = "Data tidak ditemukan";
   $telp = "Data tidak ditemukan";
+  $nisn = "Data tidak ditemukan";
 }
 
 $conn->close();
@@ -374,7 +379,7 @@ $conn->close();
       <!-- ============================================================== -->
       <div class="">
        <div class="row justify-content-center">
-        <!-- <div class="card">
+        <div class="card">
          <div class="card-body">
           <div class="user-avatar text-center d-block">
            <img alt="User Avatar" class="rounded-circle user-avatar-xxl" src="../assets/images/avatar-1.jpg"/>
@@ -385,25 +390,6 @@ $conn->close();
            <p>
             Siswa di MAN 2 Jakarta
            </p>
-          </div>
-         </div>
-         <div class="card-body border-top">
-          <h3 class="font-16">
-           Contact Information
-          </h3>
-          <div class="">
-           <ul class="list-unstyled mb-0">
-            <li class="mb-2">
-             <i class="fas fa-fw fa-envelope mr-2">
-             </i>
-             michaelchristy@gmail.com
-            </li>
-            <li class="mb-0">
-             <i class="fas fa-fw fa-phone mr-2">
-             </i>
-             (900) 123 4567
-            </li>
-           </ul>
           </div>
          </div>
         </div>
@@ -431,6 +417,14 @@ $conn->close();
              </div>
             </div>
             <div class="form-group row">
+             <label class="col-3 col-lg-2 col-form-label text-right" for="inputNISN">
+              NISN
+             </label>
+             <div class="col-9 col-lg-10">
+              <input class="form-control" id="inputNISN" placeholder="NISN" required="" type="text" value="<?php echo $nisn; ?>"/>
+             </div>
+            </div>
+            <div class="form-group row">
              <label class="col-3 col-lg-2 col-form-label text-right" for="inputTelp">
               Telp
              </label>
@@ -441,7 +435,7 @@ $conn->close();
            </form>
           </div>
          </div>
-        </div> -->
+        </div>
         <!-- Total -->
         <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
          <div class="card">

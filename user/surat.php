@@ -259,17 +259,20 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             echo '<td>' . htmlspecialchars($row['waktu_permohonan']) . '</td>';
                             echo '<td>';
                             switch ($row['status_permohonan']) {
+                                case 'Dibatalkan':
+                                    echo '<span class="badge-dot badge-danger mr-1"></span>Dibatalkan';
+                                    break;
                                 case 'Ditolak':
                                     echo '<span class="badge-dot badge-danger mr-1"></span>Ditolak';
                                     break;
                                 case 'Menunggu Konfirmasi':
                                     echo '<span class="badge-dot badge-primary mr-1"></span>Menunggu Approval';
                                     break;
-                                case 'Diterima':
-                                    echo '<span class="badge-dot badge-success mr-1"></span>Diterima';
+                                case 'Selesai':
+                                    echo '<span class="badge-dot badge-success mr-1"></span>Selesai';
                                     break;
-                                case 'Diproses':
-                                    echo '<span class="badge-dot badge-brand mr-1"></span>Diproses';
+                                case 'Dalam Proses':
+                                    echo '<span class="badge-dot badge-brand mr-1"></span>Dalam Proses';
                                     break;
                                 default:
                                     echo '<span class="badge-dot badge-secondary mr-1"></span>Unknown';
