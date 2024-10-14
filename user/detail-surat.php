@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../assets/vendor/charts/c3charts/c3.css" />
     <link rel="stylesheet" href="../assets/vendor/fonts/flag-icon-css/flag-icon.min.css" />
     <link rel="stylesheet" href="../assets/vendor/datepicker/tempusdominus-bootstrap-4.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function submitForms() {
     document.getElementById('pengajuanForm').submit();
@@ -39,6 +40,22 @@
   </head>
 
   <body>
+  <?php
+    include('../connect.php');
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $id = $_POST['id'];
+        $status = $_POST['status'];
+
+        $query = "UPDATE surat SET status_permohonan = '$status' WHERE id = '$id'";
+        if (mysqli_query($conn, $query)) {
+            echo "success";
+        } else {
+            echo "error";
+        }
+        exit;
+    }
+    ?>
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
@@ -222,6 +239,65 @@
             <!-- ============================================================== -->
             <div class="ecommerce-widget">
               <div class="row justify-content-center">
+                <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
+                <?php
+                $dsn = 'mysql:host=localhost;dbname=e-office';
+                $username = 'root';
+                $password = '';
+                
+                try {
+                    $pdo = new PDO($dsn, $username, $password);
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                } catch (PDOException $e) {
+                    echo 'Connection failed: ' . $e->getMessage();
+                }
+                
+                if (isset($_GET['id'])) {
+                    $id = $_GET['id'];
+                    $sql = 'SELECT status_permohonan FROM surat WHERE id = :id';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(['id' => $id]);
+                    $status = $stmt->fetchColumn();
+
+                    if ($status == 'Menunggu Konfirmasi') {
+                        echo '<div class="alert alert-primary" role="alert">
+                                <h4 class="alert-heading">Status: Menunggu Konfirmasi</h4>
+                                <p>Permohonan surat anda sedang dalam proses verifikasi. Mohon menunggu maksimal <b>1x24 Jam</b> untuk informasi lebih lanjut</p>
+                                <hr>
+                                <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                              </div>';
+                    } else if ($status == 'Dalam Proses') {
+                        echo '<div class="alert alert-warning" role="alert">
+                                <h4 class="alert-heading">Status: Dalam Proses</h4>
+                                <p>Permohonan surat Anda telah dikonfirmasi dan sedang dalam tahap pembuatan. Harap menunggu hingga <b>1x24 jam</b> untuk mendapatkan informasi lebih lanjut.</p>
+                                <hr>
+                                <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                </div>';
+                    } else if ($status == 'Ditolak') {
+                        echo '<div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">Status: Ditolak</h4>
+                                <p>Permohonan surat Anda telah ditolak oleh admin dengan alasan: …</p>
+                                <hr>
+                                <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                </div>';
+                    } else if ($status == 'Dibatalkan') {
+                      echo '<div class="alert alert-danger" role="alert">
+                      <h4 class="alert-heading">Status: Dibatalkan</h4>
+                      <p>Permohonan surat ini telah Anda batalkan.</p>
+                      <hr>
+                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                    </div>';
+                  } else if ($status == 'Selesai') {
+                    echo '<div class="alert alert-success" role="alert">
+                      <h4 class="alert-heading">Status: Selesai</h4>
+                      <p>Surat Anda telah berhasil diproses! Silakan unduh surat Anda dengan mengklik tombol berikut <a data-toggle="modal" data-target="#pdfModal" class="btn btn-success btn-sm text-white" role="button"><i class="fas fa-file"></i> Unduh Surat</a> </p>
+                      <hr>
+                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                    </div>';
+                  }
+                }
+                ?>
+                </div>
                 <!-- Awal Form -->
                     <!-- ============================================================== -->
                     <!-- valifation types -->
@@ -239,89 +315,94 @@
 
                         // Format tanggal ke YYYY-MM-DD
                         $ttl_pemohon = date('Y-m-d', strtotime($row['ttl_pemohon']));
+                        
+                        // Check the status of the application
+                        $status = $row['status_permohonan'];
+                        $disabled = ($status != 'Menunggu Konfirmasi') ? 'disabled' : '';
                         ?>
                             <div class="card-body">
                             <h5 class="card-header d-flex justify-content-between align-items-center">Biodata Pemohon
                             <div class="d-flex">
-                                <a href="form-surat.html" class="btn btn-space btn-warning disabled ml-auto"><i class="fas fa-edit"></i> Edit</a>
-                            </div></h5>
+                                <a href="form-surat.html" class="btn btn-space btn-warning <?= $disabled; ?> ml-auto"><i class="fas fa-edit"></i> Edit</a>
+                                <button id="batalkanPermohonan" class="btn btn-space btn-danger <?= $disabled; ?> ml-auto"><i class="fas fa-times"></i> Batalkan Permohonan</button>
+                                </div></h5>
                             <form id="pengajuanForm"  method="POST">
                             <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nama_general" type="text" required="" placeholder="" class="form-control" value="<?= $row['nama_general']; ?>">
+                                            <input name="nama_general" type="text" required="" placeholder="" class="form-control" readonly value="<?= $row['nama_general']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Telepon (WA)</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="telp_pemohon" type="text" required="" placeholder="" class="form-control" value="<?= $row['telp_pemohon']; ?>">
+                                            <input name="telp_pemohon" type="text" required="" placeholder="" class="form-control" readonly value="<?= $row['telp_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Email</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="email_pemohon" type="text" required="" placeholder="" class="form-control" value="<?= $row['email_pemohon']; ?>">
+                                            <input name="email_pemohon" type="text" required="" placeholder="" class="form-control" readonly value="<?= $row['email_pemohon']; ?>">
                                         </div>
                                 </div>
                                 <h5 class="card-header">Formulir Permohonan Surat</h5>
                                   <div class="form-group row">
                                       <label class="col-12 col-sm-3 col-form-label text-sm-right">Jenis Permohonan Surat</label>
                                       <div class="col-12 col-sm-8 col-lg-6">
-                                          <input name="jenis_permohonan" type="text" required="" placeholder="" class="form-control" value="<?= $row['jenis_permohonan']; ?>">
+                                          <input name="jenis_permohonan" type="text" required="" placeholder="" class="form-control" readonly value="<?= $row['jenis_permohonan']; ?>">
                                       </div>
                                   </div>
                                     <div class="form-group row hidden">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Permohonan</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="no_permohonan" type="text" placeholder="HIDDEN" class="form-control" value="<?= $row['no_permohonan']; ?>">
+                                            <input name="no_permohonan" type="text" placeholder="HIDDEN" class="form-control" readonly value="<?= $row['no_permohonan']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row hidden">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Surat</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="no_surat" type="text" placeholder="HIDDEN" class="form-control" value="<?= $row['no_surat']; ?>">
+                                            <input name="no_surat" type="text" placeholder="HIDDEN" class="form-control" readonly value="<?= $row['no_surat']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nama_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control" value="<?= $row['nama_pemohon']; ?>">
+                                            <input name="nama_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control" readonly value="<?= $row['nama_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Tempat Lahir</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="tempatlahir_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control" value="<?= $row['tempatlahir_pemohon']; ?>">
+                                            <input name="tempatlahir_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control" readonly value="<?= $row['tempatlahir_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Lahir</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                        <input name="ttl_pemohon" type="text" class="form-control" value="<?= $ttl_pemohon; ?>">
+                                        <input name="ttl_pemohon" type="text" class="form-control" readonly value="<?= $ttl_pemohon; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">NISN</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nisn_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control" value="<?= $row['nisn_pemohon']; ?>">
+                                            <input name="nisn_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control" readonly value="<?= $row['nisn_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">NIS</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nis_pemohon" type="number" placeholder="" class="form-control" value="<?= $row['nis_pemohon']; ?>">
+                                            <input name="nis_pemohon" type="number" placeholder="" class="form-control" readonly value="<?= $row['nis_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                     <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas</label>
                                     <div class="col-12 col-sm-8 col-lg-6">
-                                          <input name="kelas_pemohon" type="text" required="" placeholder="" class="form-control" value="<?= $row['kelas_pemohon']; ?>">
+                                          <input name="kelas_pemohon" type="text" required="" placeholder="" class="form-control" readonly value="<?= $row['kelas_pemohon']; ?>">
                                     </div></div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Keperluan (Deskripsi)</label>
                                         <div class="col-18 col-sm-8 col-lg-6">
-                                            <textarea name="keperluan_pemohon" required="" placeholder="Masukkan keperluan untuk pembuatan surat" class="form-control" ><?= $row['keperluan_pemohon']; ?></textarea>
+                                            <textarea name="keperluan_pemohon" required="" placeholder="Masukkan keperluan untuk pembuatan surat" class="form-control" readonly ><?= $row['keperluan_pemohon']; ?></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -334,26 +415,26 @@
                                         <div class="form-group row">
                                             <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Kegiatan</label>
                                             <div class="col-12 col-sm-8 col-lg-6">
-                                                <input name="kegiatan_pemohon" type="text" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control" value="<?= $row['kegiatan_pemohon']; ?>">
+                                                <input name="kegiatan_pemohon" type="text" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control" readonly value="<?= $row['kegiatan_pemohon']; ?>">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Awal Kegiatan</label>
                                             <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="durasi_awal_pemohon" type="text" placeholder="" class="form-control" value="<?= $row['durasi_awal_pemohon']; ?>">
+                                            <input name="durasi_awal_pemohon" type="text" placeholder="" class="form-control" readonly value="<?= $row['durasi_awal_pemohon']; ?>">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Akhir Kegiatan</label>
                                             <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="durasi_akhir_pemohon" type="text" placeholder="" class="form-control" value="<?= $row['durasi_akhir_pemohon']; ?>">    
+                                            <input name="durasi_akhir_pemohon" type="text" placeholder="" class="form-control" readonly value="<?= $row['durasi_akhir_pemohon']; ?>">    
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal & Waktu Permohonan</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                        <input name="waktu_permohonan" type="datetime" placeholder="" class="form-control" value="<?= $row['waktu_permohonan']; ?>">    
+                                        <input name="waktu_permohonan" type="datetime" placeholder="" class="form-control" readonly value="<?= $row['waktu_permohonan']; ?>">    
                                         </div>
                                         </div>
                                     </div>
@@ -489,6 +570,39 @@
             kegiatanForm.style.display = 'none';
         }
     });
+    
 </script>
+<script>
+    document.getElementById('batalkanPermohonan').addEventListener('click', function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Apakah anda yakin membatalkan permohonan surat ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, saya yakin',
+            cancelButtonText: 'Tidak, saya mengecek kembali'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send AJAX request to update the status
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        Swal.fire(
+                            'Dibatalkan!',
+                            'Permohonan surat telah dibatalkan.',
+                            'success'
+                        ).then(() => {
+                            location.reload(); // Reload the page to reflect changes
+                        });
+                    }
+                };
+                xhr.send("id=<?= $id; ?>&status=Dibatalkan");
+            }
+        });
+    });
+    </script>
   </body>
 </html>
