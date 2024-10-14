@@ -13,7 +13,7 @@ include '../connect.php';
 $username = $_SESSION['username'];
 
 // 3. Query untuk mengambil data berdasarkan username (pastikan tabel Anda memiliki kolom 'username')
-$sql = "SELECT name, class, telp FROM user WHERE username = '$username'";
+$sql = "SELECT name, class, telp, nisn FROM user WHERE username = '$username'";
 
 $result = $conn->query($sql);
 
@@ -405,7 +405,7 @@ $conn->close();
               Name
              </label>
              <div class="col-9 col-lg-10">
-              <input class="form-control" id="inputName" placeholder="Name" required="" type="text" value="<?php echo $name; ?>"/>
+              <input class="form-control" id="inputName" placeholder="Name" required="" type="text" readonly value="<?php echo $name; ?>"/>
              </div>
             </div>
             <div class="form-group row">
@@ -413,7 +413,7 @@ $conn->close();
               Class
              </label>
              <div class="col-9 col-lg-10">
-              <input class="form-control" id="inputClass" placeholder="Class" required="" type="text" value="<?php echo $class; ?>"/>
+              <input class="form-control" id="inputClass" placeholder="Class" required="" type="text" readonly value="<?php echo $class; ?>"/>
              </div>
             </div>
             <div class="form-group row">
@@ -421,7 +421,7 @@ $conn->close();
               NISN
              </label>
              <div class="col-9 col-lg-10">
-              <input class="form-control" id="inputNISN" placeholder="NISN" required="" type="text" value="<?php echo $nisn; ?>"/>
+              <input class="form-control" id="inputNISN" placeholder="NISN" required="" type="text" readonly value="<?php echo $nisn; ?>"/>
              </div>
             </div>
             <div class="form-group row">
@@ -429,7 +429,7 @@ $conn->close();
               Telp
              </label>
              <div class="col-9 col-lg-10">
-              <input class="form-control" id="inputTelp" placeholder="Telp" required="" type="tel" value="<?php echo $telp; ?>"/>
+              <input class="form-control" id="inputTelp" placeholder="Telp" required="" type="tel" readonly value="<?php echo $telp; ?>"/>
              </div>
             </div>
            </form>
