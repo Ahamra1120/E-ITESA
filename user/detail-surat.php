@@ -323,7 +323,7 @@
                             <div class="card-body">
                             <h5 class="card-header d-flex justify-content-between align-items-center">Biodata Pemohon
                             <div class="d-flex">
-                                <a href="form-surat.html" class="btn btn-space btn-warning <?= $disabled; ?> ml-auto"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="edit-surat.php?id=<?php echo $id; ?>" class="btn btn-space btn-warning <?= $disabled; ?> ml-auto"><i class="fas fa-edit"></i> Edit</a>
                                 <button id="batalkanPermohonan" class="btn btn-space btn-danger <?= $disabled; ?> ml-auto"><i class="fas fa-times"></i> Batalkan Permohonan</button>
                                 </div></h5>
                             <form id="pengajuanForm"  method="POST">
