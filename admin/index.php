@@ -169,10 +169,10 @@ $username = $_SESSION['username']; // Ganti 'username' dengan kunci yang sesuai
               <ul class="navbar-nav flex-column">
                 <li class="nav-divider">Menu</li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="index.html"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link active" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                  <a class="nav-link" href="surat.php"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
                 </li>
                 <li class="nav-divider">Tautan Eksternal</li>
                 <li class="nav-item">
