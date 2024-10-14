@@ -323,7 +323,7 @@
                             <div class="card-body">
                             <h5 class="card-header d-flex justify-content-between align-items-center">Biodata Pemohon
                             <div class="d-flex">
-                                <a id="editPermohonan" class="btn btn-space btn-warning <?= $disabled; ?> ml-auto"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="form-surat.html" class="btn btn-space btn-warning <?= $disabled; ?> ml-auto"><i class="fas fa-edit"></i> Edit</a>
                                 <button id="batalkanPermohonan" class="btn btn-space btn-danger <?= $disabled; ?> ml-auto"><i class="fas fa-times"></i> Batalkan Permohonan</button>
                                 </div></h5>
                             <form id="pengajuanForm"  method="POST">
@@ -346,7 +346,7 @@
                                         </div>
                                 </div>
                                 <h5 class="card-header">Formulir Permohonan Surat</h5>
-                                  <div id="formPermohonanSurat" class="form-group row">
+                                  <div class="form-group row">
                                       <label class="col-12 col-sm-3 col-form-label text-sm-right">Jenis Permohonan Surat</label>
                                       <div class="col-12 col-sm-8 col-lg-6">
                                           <input name="jenis_permohonan" type="text" required="" placeholder="" class="form-control" readonly value="<?= $row['jenis_permohonan']; ?>">
@@ -438,10 +438,6 @@
                                         </div>
                                         </div>
                                     </div>
-                                    <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
-                                            <button id="submitEdit" class="btn btn-space btn-primary" class="form-control">Submit</button>
-                                            <button  class="btn btn-space btn-secondary">Cancel</button>
-                                        </div>
                                 </form>
                             </div>
                         </div>
@@ -577,15 +573,6 @@
     
 </script>
 <script>
-    document.getElementById('inputGroupSelect01').addEventListener('change', function() {
-        var kegiatanForm = document.getElementById('kegiatanForm');
-        if (this.value === 'Surat Keterangan Dispensasi' || this.value === 'Surat Tugas Lomba Siswa') {
-            kegiatanForm.style.display = 'block';
-        } else {
-            kegiatanForm.style.display = 'none';
-        }
-    });
-
     document.getElementById('batalkanPermohonan').addEventListener('click', function(event) {
         event.preventDefault();
         Swal.fire({
@@ -608,80 +595,14 @@
                             'Permohonan surat telah dibatalkan.',
                             'success'
                         ).then(() => {
-                            location.reload(); // Refresh halaman
+                            location.reload(); // Reload the page to reflect changes
                         });
                     }
                 };
-                xhr.send("action=cancel");
+                xhr.send("id=<?= $id; ?>&status=Dibatalkan");
             }
         });
     });
-
-    // Event listener untuk tombol edit
-    document.getElementById('editPermohonan').addEventListener('click', function(event) {
-        event.preventDefault();
-        var form = document.getElementById('formPermohonanSurat');
-        form.style.display = 'block'; // Tampilkan form
-        form.querySelectorAll('input, textarea, select').forEach(function(element) {
-            element.removeAttribute('disabled'); // Aktifkan elemen form untuk diedit
-        });
-        document.getElementById('submitEdit').style.display = 'inline-block'; // Tampilkan tombol submit
-        document.getElementById('cancelEdit').style.display = 'inline-block'; // Tampilkan tombol cancel
-    });
-
-    // Event listener untuk tombol submit
-    document.getElementById('submitEdit').addEventListener('click', function(event) {
-        event.preventDefault();
-        Swal.fire({
-            title: 'Apakah anda yakin?',
-            text: "Apakah anda yakin ingin menyimpan perubahan ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, saya yakin',
-            cancelButtonText: 'Tidak, saya mengecek kembali'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Kirim permintaan AJAX untuk memperbarui data
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        Swal.fire(
-                            'Berhasil!',
-                            'Data permohonan surat telah diperbarui.',
-                            'success'
-                        ).then(() => {
-                            location.reload(); // Refresh halaman
-                        });
-                    }
-                };
-                var formData = new FormData(document.getElementById('formPermohonanSurat'));
-                xhr.send(new URLSearchParams(formData).toString());
-            }
-        });
-    });
-
-    // Event listener untuk tombol cancel
-    document.getElementById('cancelEdit').addEventListener('click', function(event) {
-        event.preventDefault();
-        var form = document.getElementById('formPermohonanSurat');
-        form.style.display = 'none'; // Sembunyikan form
-        form.querySelectorAll('input, textarea, select').forEach(function(element) {
-            element.setAttribute('disabled', 'disabled'); // Nonaktifkan elemen form
-        });
-        document.getElementById('submitEdit').style.display = 'none'; // Sembunyikan tombol submit
-        document.getElementById('cancelEdit').style.display = 'none'; // Sembunyikan tombol cancel
-    });
-</script>
-
-<!-- HTML untuk tombol edit, submit, dan cancel -->
-<button id="editPermohonan">Edit</button>
-<form id="formPermohonanSurat" style="display:none;">
-    <!-- Formulir Permohonan Surat -->
-    <!-- Tambahkan elemen form di sini -->
-    <button id="submitEdit" style="display:none;">Submit</button>
-    <button id="cancelEdit" style="display:none;">Cancel</button>
-</form>
+    </script>
   </body>
 </html>
