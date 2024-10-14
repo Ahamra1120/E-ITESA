@@ -176,13 +176,26 @@
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav flex-column">
+            <ul class="navbar-nav flex-column">
                 <li class="nav-divider">Menu</li>
                 <li class="nav-item">
-                  <a class="nav-link" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link active" href="index.html"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="surat.php"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                  <a class="nav-link" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                </li>
+                <li class="nav-divider">Tautan Eksternal</li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/video/"><i class="fa fa-fw fa-globe"></i>Pengelola Informasi dan Dokumentasi</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/ada/"><i class="fa fa-fw fa-globe"></i>LJK</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/zona-integritas-zi/"><i class="fa fa-fw fa-globe"></i>RENSTRA</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/test/"><i class="fa fa-fw fa-globe"></i>PERKIN</a>
                 </li>
               </ul>
             </div>
@@ -229,199 +242,210 @@
                     <!-- ============================================================== -->
                     <div class="col-xl-15 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
+                        <?php
+                        include('../connect.php');
+
+                        $id = $_GET['id']; //mengambil id barang yang ingin diubah
+
+                        //menampilkan barang berdasarkan id
+                        $data = mysqli_query($conn, "SELECT * FROM surat WHERE id = '$id'");
+                        $row = mysqli_fetch_assoc($data);
+                        // Initialize $surat to avoid undefined variable warning
+                        $surat = isset($row) ? $row : [];
+                        // Format tanggal ke YYYY-MM-DD
+                        $ttl_pemohon = date('Y-m-d', strtotime($row['ttl_pemohon']));
+                        
+                        // Check the status of the application
+                        $status = $row['status_permohonan'];
+                        $disabled = ($status != 'Menunggu Konfirmasi') ? 'disabled' : '';
+                        ?>
                             <div class="card-body">
-                            <h5 class="card-header">Biodata Pemohon</h5>
-                            <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])): ?>
-                              echo "<script>alert('data berhasil disimpan.');window.location='surat.php';</script>";
-                              <?php endif; ?>
-                            <form id="pengajuanForm" action="surat.php" method="POST" enctype="multipart/form-data">
+                            <h5 class="card-header d-flex justify-content-between align-items-center">Biodata Pemohon</h5>
+                            <form id="pengajuanForm" action="surat.php" method="POST">
                             <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nama_general" type="text" required="" placeholder="" class="form-control">
+                                            <input name="nama_general" type="text" placeholder="" class="form-control" readonly value="<?= $row['nama_general']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Telepon (WA) <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Telepon (WA)</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="telp_pemohon" type="text" required="" placeholder="" class="form-control">
+                                            <input name="telp_pemohon" type="text" placeholder="" class="form-control" readonly value="<?= $row['telp_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Email <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Alamat Email</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="email_pemohon" type="text" required="" placeholder="" class="form-control">
+                                            <input name="email_pemohon" type="text" placeholder="" class="form-control" readonly value="<?= $row['email_pemohon']; ?>">
                                         </div>
                                 </div>
                                 <h5 class="card-header">Formulir Permohonan Surat</h5>
                                   <div class="form-group row">
                                       <label class="col-12 col-sm-3 col-form-label text-sm-right">Jenis Permohonan Surat <span class="required-asterisk">*</label>
                                       <div class="col-12 col-sm-8 col-lg-6">
-                                          <select name="jenis_permohonan" class="custom-select" id="inputGroupSelect01">
-                                              <option selected>Silahkan Pilih...</option>
-                                              <option value="Surat Keterangan Aktif Siswa">Surat Keterangan Aktif Siswa</option>
-                                              <option value="Surat Keterangan Kelakuan Baik">Surat Keterangan Kelakuan Baik</option>
-                                              <option value="Surat Keterangan Rekomendasi Siswa">Surat Keterangan Rekomendasi Siswa</option>
-                                              <option value="Surat Keterangan Dispensasi">Surat Keterangan Dispensasi</option>
-                                              <option value="Surat Keterangan Peringkat">Surat Keterangan Peringkat</option>
-                                              <option value="Surat Keterangan Prestasi">Surat Keterangan Prestasi</option>
-                                              <option value="Surat Tugas Lomba Siswa">Surat Tugas Lomba Siswa</option>
-                                          </select>
-                                      </div>
-                                  </div>
+                                        <select name="jenis_permohonan" class="custom-select" id="inputGroupSelect01">
+                                            <option selected>Silahkan Pilih...</option>
+                                            <option value="Surat Keterangan Aktif Siswa" <?php echo (isset($surat['jenis_permohonan']) && $surat['jenis_permohonan'] == 'Surat Keterangan Aktif Siswa') ? 'selected' : ''; ?>>Surat Keterangan Aktif Siswa</option>
+                                            <option value="Surat Keterangan Kelakuan Baik" <?php echo (isset($surat['jenis_permohonan']) && $surat['jenis_permohonan'] == 'Surat Keterangan Kelakuan Baik') ? 'selected' : ''; ?>>Surat Keterangan Kelakuan Baik</option>
+                                            <option value="Surat Keterangan Rekomendasi Siswa" <?php echo (isset($surat['jenis_permohonan']) && $surat['jenis_permohonan'] == 'Surat Keterangan Rekomendasi Siswa') ? 'selected' : ''; ?>>Surat Keterangan Rekomendasi Siswa</option>
+                                            <option value="Surat Keterangan Dispensasi" <?php echo (isset($surat['jenis_permohonan']) && $surat['jenis_permohonan'] == 'Surat Keterangan Dispensasi') ? 'selected' : ''; ?>>Surat Keterangan Dispensasi</option>
+                                            <option value="Surat Keterangan Peringkat" <?php echo (isset($surat['jenis_permohonan']) && $surat['jenis_permohonan'] == 'Surat Keterangan Peringkat') ? 'selected' : ''; ?>>Surat Keterangan Peringkat</option>
+                                            <option value="Surat Keterangan Prestasi" <?php echo (isset($surat['jenis_permohonan']) && $surat['jenis_permohonan'] == 'Surat Keterangan Prestasi') ? 'selected' : ''; ?>>Surat Keterangan Prestasi</option>
+                                            <option value="Surat Tugas Lomba Siswa" <?php echo (isset($surat['jenis_permohonan']) && $surat['jenis_permohonan'] == 'Surat Tugas Lomba Siswa') ? 'selected' : ''; ?>>Surat Tugas Lomba Siswa</option>
+                                        </select>
+                                        </div>
+                                </div>
                                     <div class="form-group row hidden">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Permohonan</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="no_permohonan" type="text" placeholder="HIDDEN" class="form-control">
+                                            <input name="no_permohonan" type="text" placeholder="HIDDEN" class="form-control" readonly value="<?= $row['no_permohonan']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row hidden">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">No. Surat</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="no_surat" type="text" placeholder="HIDDEN" class="form-control">
+                                            <input name="no_surat" type="text" placeholder="HIDDEN" class="form-control" readonly value="<?= $row['no_surat']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nama_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="nama_pemohon" type="text" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control"  value="<?= $row['nama_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tempat Lahir <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tempat Lahir</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="tempatlahir_pemohon" type="text" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="tempatlahir_pemohon" type="text" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control"  value="<?= $row['tempatlahir_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Lahir <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Lahir</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="ttl_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker4" />
+                                        <input name="ttl_pemohon" type="text" class="form-control"  value="<?= $ttl_pemohon; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">NISN <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">NISN</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nisn_pemohon" type="number" required="" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="nisn_pemohon" type="number" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control"  value="<?= $row['nisn_pemohon']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">NIS</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <input name="nis_pemohon" type="number" placeholder="Masukkan sesuai dengan yang tertera di Kartu Pelajar" class="form-control">
+                                            <input name="nis_pemohon" type="number" placeholder="" class="form-control"  value="<?= $row['nis_pemohon']; ?>">
                                         </div>
-                                    </div><div class="form-group row">
-                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas <span class="required-asterisk">*</label>
+                                    </div>
+                                    <div class="form-group row">
+                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Kelas</label>
                                     <div class="col-12 col-sm-8 col-lg-6">
-                                        <select name="kelas_pemohon" class="custom-select" id="inputGroupSelect01">
-                                            <option selected>Silahkan Pilih...</option>
-                                            <option value="X-A">X-A</option>
-                                            <option value="X-B">X-B</option>
-                                            <option value="X-C">X-C</option>
-                                            <option value="X-D">X-D</option>
-                                            <option value="X-E">X-E</option>
-                                            <option value="X-F">X-F</option>
-                                            <option value="X-G">X-G</option>
-                                            <option value="X-H">X-H</option>
-                                            <option value="XI-A">XI-A</option>
-                                            <option value="XI-B">XI-B</option>
-                                            <option value="XI-C">XI-C</option>
-                                            <option value="XI-D">XI-D</option>
-                                            <option value="XI-E">XI-E</option>
-                                            <option value="XI-F">XI-F</option>
-                                            <option value="XI-G">XI-G</option>
-                                            <option value="XI-H">XI-H</option>
-                                            <option value="XII-A">XII-A</option>
-                                            <option value="XII-B">XII-B</option>
-                                            <option value="XII-C">XII-C</option>
-                                            <option value="XII-D">XII-D</option>
-                                            <option value="XII-E">XII-E</option>
-                                            <option value="XII-F">XII-F</option>
-                                            <option value="XII-G">XII-G</option>
-                                            <option value="XII-H">XII-H</option>
-                                        </select>
+                                    <select name="kelas_pemohon" class="custom-select" id="inputGroupSelect01">
+                                        <option selected>Silahkan Pilih...</option>
+                                        <option value="X-A" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-A') ? 'selected' : ''; ?>>X-A</option>
+                                        <option value="X-B" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-B') ? 'selected' : ''; ?>>X-B</option>
+                                        <option value="X-C" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-C') ? 'selected' : ''; ?>>X-C</option>
+                                        <option value="X-D" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-D') ? 'selected' : ''; ?>>X-D</option>
+                                        <option value="X-E" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-E') ? 'selected' : ''; ?>>X-E</option>
+                                        <option value="X-F" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-F') ? 'selected' : ''; ?>>X-F</option>
+                                        <option value="X-G" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-G') ? 'selected' : ''; ?>>X-G</option>
+                                        <option value="X-H" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'X-H') ? 'selected' : ''; ?>>X-H</option>
+                                        <option value="XI-A" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-A') ? 'selected' : ''; ?>>XI-A</option>
+                                        <option value="XI-B" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-B') ? 'selected' : ''; ?>>XI-B</option>
+                                        <option value="XI-C" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-C') ? 'selected' : ''; ?>>XI-C</option>
+                                        <option value="XI-D" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-D') ? 'selected' : ''; ?>>XI-D</option>
+                                        <option value="XI-E" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-E') ? 'selected' : ''; ?>>XI-E</option>
+                                        <option value="XI-F" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-F') ? 'selected' : ''; ?>>XI-F</option>
+                                        <option value="XI-G" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-G') ? 'selected' : ''; ?>>XI-G</option>
+                                        <option value="XI-H" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XI-H') ? 'selected' : ''; ?>>XI-H</option>
+                                        <option value="XII-A" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-A') ? 'selected' : ''; ?>>XII-A</option>
+                                        <option value="XII-B" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-B') ? 'selected' : ''; ?>>XII-B</option>
+                                        <option value="XII-C" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-C') ? 'selected' : ''; ?>>XII-C</option>
+                                        <option value="XII-D" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-D') ? 'selected' : ''; ?>>XII-D</option>
+                                        <option value="XII-E" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-E') ? 'selected' : ''; ?>>XII-E</option>
+                                        <option value="XII-F" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-F') ? 'selected' : ''; ?>>XII-F</option>
+                                        <option value="XII-G" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-G') ? 'selected' : ''; ?>>XII-G</option>
+                                        <option value="XII-H" <?php echo (isset($surat['kelas_pemohon']) && $surat['kelas_pemohon'] == 'XII-H') ? 'selected' : ''; ?>>XII-H</option>
+                                    </select>
                                     </div>
                                 </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Keperluan (Deskripsi) <span class="required-asterisk">*</label>
+                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Lampiran Berkas Pendukung</label>
+                                        
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <textarea name="keperluan_pemohon" required="" placeholder="Masukkan keperluan untuk pembuatan surat" class="form-control"></textarea>
+                                            <!-- Tampilkan file yang sudah diunggah sebelumnya (jika ada) di bawah label -->
+                                             <!-- Input untuk mengunggah file baru -->
+                                             <input type="file" name="lampiran_pemohon" required="" accept="application/pdf" class="form-control">
+                                             <?php if (!empty($row['lampiran_pemohon'])): ?>
+                                                <p>
+                                                    File sebelumnya: 
+                                                    <a href="../assets/lampiran/user/<?= $row['lampiran_pemohon']; ?>" target="_blank">
+                                                        <?= $row['lampiran_pemohon']; ?>
+                                                    </a>
+                                                </p>
+                                            <?php endif; ?>
+                                            </div>
+                                    </div>
+
+                                    <div id="kegiatanForm" style="display: none;">
+                                        <div class="form-group row">
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Kegiatan</label>
+                                            <div class="col-12 col-sm-8 col-lg-6">
+                                                <input name="kegiatan_pemohon" type="text" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control" readonly value="<?= $row['kegiatan_pemohon']; ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Awal Kegiatan</label>
+                                            <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="durasi_awal_pemohon" type="text" placeholder="" class="form-control" readonly value="<?= $row['durasi_awal_pemohon']; ?>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Akhir Kegiatan</label>
+                                            <div class="col-12 col-sm-8 col-lg-6">
+                                            <input name="durasi_akhir_pemohon" type="text" placeholder="" class="form-control" readonly value="<?= $row['durasi_akhir_pemohon']; ?>">    
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-12 col-sm-3 col-form-label text-sm-right">Lampiran Berkas Pendukung <span class="required-asterisk">*</label>
-                                        <div class="col-12 col-sm-8 col-lg-6">
-                                            <input type="file" name="lampiran_pemohon" required="" accept="application/pdf" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div id="kegiatanForm" style="display: none;">
-                                        <div class="form-group row">
-                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Kegiatan <span class="required-asterisk">*</label>
-                                            <div class="col-12 col-sm-8 col-lg-6">
-                                                <input name="kegiatan_pemohon" type="text" placeholder="Masukkan nama kegiatan yang akan diikuti siswa" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Awal Kegiatan <span class="required-asterisk">*</label>
-                                            <div class="col-12 col-sm-8 col-lg-6">
-                                                <input name="durasi_awal_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker5" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal Akhir Kegiatan <span class="required-asterisk">*</label>
-                                            <div class="col-12 col-sm-8 col-lg-6">
-                                                <input name="durasi_akhir_pemohon" type="text" placeholder="MM/DD/YYYY" class="form-control datepicker" id="datepicker6" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row hidden">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Tanggal & Waktu Permohonan</label>
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                        <div name="waktu_permohonan" class="input-group date" id="datetimepicker7" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#datetimepicker7" placeholder="MM/DD/YYYY HH:mm:ss"/>
+                                        <input name="waktu_permohonan" type="datetime" placeholder="" class="form-control" readonly value="<?= $row['waktu_permohonan']; ?>">    
                                         </div>
                                         </div>
                                     </div>
                                     <div class="form-group row text-right">
                                         <div class="col col-sm-10 col-lg-9 offset-sm-1 offset-lg-0">
-                                            <button id="submitBtn" class="btn btn-space btn-primary" class="form-control">Submit</button>
+                                            <button id="submitBtn" class="btn btn-space btn-primary" class="form-control">Update</button>
                                             <button class="btn btn-space btn-secondary">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
                                 <?php
-                                  // Enable error reporting for debugging
-                                  error_reporting(E_ALL);
-                                  ini_set('display_errors', 1);
+                                include('../connect.php');
 
-                                  // Database connection
-                                  include("../connect.php");
-                                  if ($conn->connect_error) {
-                                      die("Connection failed: " . $conn->connect_error);
-                                  }
-
-                                  // Function to get POST data safely
-                                  function getPostData($key) {
-                                      return isset($_POST[$key]) ? $_POST[$key] : '';
-                                  }
-
-                                  // Check if form is submitted
-                                  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                                      // Retrieve form data
-                                      $nama_general = getPostData('nama_general');
-                                      $telp_pemohon = getPostData('telp_pemohon');
-                                      $email_pemohon = getPostData('email_pemohon');
-                                      $jenis_permohonan = getPostData('jenis_permohonan');
-                                      $nama_pemohon = getPostData('nama_pemohon');
-                                      $tempatlahir_pemohon = getPostData('tempatlahir_pemohon');
-                                      $ttl_pemohon = getPostData('ttl_pemohon');
-                                      $nisn_pemohon = getPostData('nisn_pemohon');
-                                      $nis_pemohon = getPostData('nis_pemohon');
-                                      $kelas_pemohon = getPostData('kelas_pemohon');
-                                      $keperluan_pemohon = getPostData('keperluan_pemohon');
-                                      $kegiatan_pemohon = getPostData('kegiatan_pemohon');
-                                      $durasi_awal_pemohon = getPostData('durasi_awal_pemohon');
-                                      $durasi_akhir_pemohon = getPostData('durasi_akhir_pemohon');
+                                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                                    // Initialize variables
+                                    $id = $_POST['id'];
+                                    $nama_general = $_POST['nama_general'];
+                                    $telp_pemohon = $_POST['telp_pemohon'];
+                                    $email_pemohon = $_POST['email_pemohon'];
+                                    $jenis_permohonan = $_POST['jenis_permohonan'];
+                                    $no_surat = $_POST['no_surat'];
+                                    $nama_pemohon = $_POST['nama_pemohon'];
+                                    $tempatlahir_pemohon = $_POST['tempatlahir_pemohon'];
+                                    $ttl_pemohon = $_POST['ttl_pemohon'];
+                                    $nisn_pemohon = $_POST['nisn_pemohon'];
+                                    $nis_pemohon = $_POST['nis_pemohon'];
+                                    $kelas_pemohon = $_POST['kelas_pemohon'];
+                                    $keperluan_pemohon = $_POST['keperluan_pemohon'];
+                                    $lampiran_pemohon = $_POST['lampiran_pemohon'];
+                                    $kegiatan_pemohon = $_POST['kegiatan_pemohon'];
+                                    $durasi_awal_pemohon = $_POST['durasi_awal_pemohon'];
+                                    $durasi_akhir_pemohon = $_POST['durasi_akhir_pemohon'];
+                                    $waktu_permohonan = $_POST['waktu_permohonan'];
+                                    $status_permohonan = $_POST['status_permohonan'];
 
                                       // Ubah format tanggal dari MM/DD/YYYY ke YYYY/MM/DD
                                       $date = DateTime::createFromFormat('m/d/Y', $ttl_pemohon);
@@ -431,13 +455,6 @@
                                           echo "Invalid date format!";
                                           exit();
                                       }
-
-                                      // Generate no_permohonan
-                                      $sql = "SELECT COUNT(*) AS total FROM surat";
-                                      $result = $conn->query($sql);
-                                      $row = $result->fetch_assoc();
-                                      $total = $row['total'] + 1;
-                                      $no_permohonan = "id00" . str_pad($total, 2, "0", STR_PAD_LEFT);
 
                                       // Handle file upload
                                       if (isset($_FILES['lampiran_pemohon']) && $_FILES['lampiran_pemohon']['error'] == UPLOAD_ERR_OK) {
@@ -468,27 +485,45 @@
                                       }
 
                                       // Set default values
-                                      $status_permohonan = "Menunggu Konfirmasi";
                                       $no_surat = "";
                                       $datetime = new DateTime("now", new DateTimeZone("Asia/Jakarta"));
                                       $waktu_permohonan = $datetime->format("Y-m-d H:i:s");
 
-                                      // Insert data into the database
-                                      $sql = "INSERT INTO surat (nama_general, telp_pemohon, email_pemohon, jenis_permohonan, no_permohonan, no_surat, nama_pemohon, tempatlahir_pemohon, ttl_pemohon, nisn_pemohon, nis_pemohon, kelas_pemohon, keperluan_pemohon, lampiran_pemohon, kegiatan_pemohon, durasi_awal_pemohon, durasi_akhir_pemohon, waktu_permohonan, status_permohonan) 
-                                      VALUES ('$nama_general', '$telp_pemohon', '$email_pemohon', '$jenis_permohonan', '$no_permohonan', '$no_surat', '$nama_pemohon', '$tempatlahir_pemohon', '$ttl_pemohon', '$nisn_pemohon', '$nis_pemohon', '$kelas_pemohon', '$keperluan_pemohon', '$lampiran_pemohon', '$kegiatan_pemohon', '$durasi_awal_pemohon', '$durasi_akhir_pemohon', '$waktu_permohonan', '$status_permohonan')";
+                                      // Prepare SQL query
+                                    $sql = "UPDATE surat SET 
+                                    nama_general = '$nama_general',
+                                    telp_pemohon = '$telp_pemohon',
+                                    email_pemohon = '$email_pemohon',
+                                    jenis_permohonan = '$jenis_permohonan',
+                                    no_surat = '$no_surat',
+                                    nama_pemohon = '$nama_pemohon',
+                                    tempatlahir_pemohon = '$tempatlahir_pemohon',
+                                    ttl_pemohon = '$ttl_pemohon',
+                                    nisn_pemohon = '$nisn_pemohon',
+                                    nis_pemohon = '$nis_pemohon',
+                                    kelas_pemohon = '$kelas_pemohon',
+                                    keperluan_pemohon = '$keperluan_pemohon',
+                                    lampiran_pemohon = '$lampiran_pemohon',
+                                    kegiatan_pemohon = '$kegiatan_pemohon',
+                                    durasi_awal_pemohon = '$durasi_awal_pemohon',
+                                    durasi_akhir_pemohon = '$durasi_akhir_pemohon',
+                                    waktu_permohonan = '$waktu_permohonan',
+                                    status_permohonan = '$status_permohonan'
+                                WHERE id = '$id'";
 
-                                      if ($conn->query($sql) === TRUE) {
-                                          // Redirect to a success page
-                                          header("Location: surat.php");
-                                          exit();
-                                      } else {
-                                          echo "Error: " . $sql . "<br>" . $conn->error;
-                                      }
-                                  }
+                                // Execute SQL query
+                                if ($conn->query($sql) === TRUE) {
+                                // Redirect to a success page
+                                header("Location: surat.php");
+                                exit();
+                                } else {
+                                echo "Error: " . $sql . "<br>" . $conn->error;
+                                }
+                                }
 
-                                  $conn->close();
-                                  ?>
-                            </div>
+                                $conn->close();
+                                ?>
+                                </div>
                         </div>
                     </div>
                     <!-- ============================================================== -->
@@ -662,7 +697,7 @@ if (!isValid) {
                         if (result.isConfirmed) {
                             // Submit the form data via AJAX
                             $.ajax({
-                                url: 'tambah-surat.php', // PHP script to handle form submission
+                                url: 'edit-surat.php', // PHP script to handle form submission
                                 type: 'POST',
                                 data: formData,
                                 processData: false,
@@ -689,7 +724,7 @@ if (!isValid) {
                                         if (result.dismiss === Swal.DismissReason.timer) {
                                             console.log('I was closed by the timer');
                                             // Redirect to the main page
-                                            window.location.href = 'surat.php';
+                                            window.location.href = 'detail-surat.php?id=<?php echo $id; ?>';
                                         }
                                     });
                                 },

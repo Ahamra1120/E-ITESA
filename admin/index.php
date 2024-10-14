@@ -174,8 +174,18 @@ $username = $_SESSION['username']; // Ganti 'username' dengan kunci yang sesuai
                 <li class="nav-item">
                   <a class="nav-link" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
                 </li>
+                <li class="nav-divider">Tautan Eksternal</li>
                 <li class="nav-item">
-                  <a class="nav-link" href="ruangan.html"><i class="fa fa-fw fa-key"></i>Peminjaman Ruangan</a>
+                  <a class="nav-link" href="https://man2jakarta.sch.id/video/"><i class="fa fa-fw fa-globe"></i>Pengelola Informasi dan Dokumentasi</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/ada/"><i class="fa fa-fw fa-globe"></i>LJK</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/zona-integritas-zi/"><i class="fa fa-fw fa-globe"></i>RENSTRA</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/test/"><i class="fa fa-fw fa-globe"></i>PERKIN</a>
                 </li>
               </ul>
             </div>

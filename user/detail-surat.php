@@ -192,13 +192,26 @@
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav flex-column">
+            <ul class="navbar-nav flex-column">
                 <li class="nav-divider">Menu</li>
                 <li class="nav-item">
-                  <a class="nav-link" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link active" href="index.html"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="surat.php"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                  <a class="nav-link" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                </li>
+                <li class="nav-divider">Tautan Eksternal</li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/video/"><i class="fa fa-fw fa-globe"></i>Pengelola Informasi dan Dokumentasi</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/ada/"><i class="fa fa-fw fa-globe"></i>LJK</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/zona-integritas-zi/"><i class="fa fa-fw fa-globe"></i>RENSTRA</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/test/"><i class="fa fa-fw fa-globe"></i>PERKIN</a>
                 </li>
               </ul>
             </div>
