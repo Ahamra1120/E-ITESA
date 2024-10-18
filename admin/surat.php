@@ -57,7 +57,7 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="dashboard-header">
         <nav class="navbar navbar-expand-lg bg-white fixed-top">
           <br />
-          <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
+          <img alt="Logo E-Itesa" src="../assets/images/logo-admin.png" style="width: 300px; height: 57px; margin-left: 30px"/>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -225,13 +225,13 @@ $suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="row">
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="page-header">
-                  <h2 class="pageheader-title">E-ITESA Dashboard</h2>
-                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-ITESA Smart Administration Dashboard</p>
+                  <h2 class="pageheader-title">E-Office Dashboard</h2>
+                  <p class="pageheader-TEXT">Hello Admin, welcome to E-Office Smart Administration Dashboard</p>
                   <div class="page-breadcrumb">
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">E-ITESA</li>
+                        <li class="breadcrumb-item active" aria-current="page">E-Office</li>
                       </ol>
                     </nav>
                   </div>

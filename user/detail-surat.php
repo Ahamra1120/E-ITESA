@@ -36,7 +36,7 @@
         color: red;
     }
     </style>
-    <title>E-ITESA - Permohonan Surat</title>
+    <title>E-Office - Permohonan Surat</title>
   </head>
 
   <body>
@@ -66,7 +66,7 @@
       <div class="dashboard-header">
         <nav class="navbar navbar-expand-lg bg-white fixed-top">
           <br />
-          <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
+          <img alt="Logo E-Office" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -193,14 +193,37 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav flex-column">
-                <li class="nav-divider">Menu</li>
+        <li class="nav-divider">
+         Menu
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="index.php">
+          <i class="fa fa-fw fa-user-circle">
+          </i>
+          Dashboard
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link active" href="surat.php">
+          <i class="fa fa-fw fa-envelope">
+          </i>
+          Permohonan Surat
+         </a>
+        </li>
+                <li class="nav-divider">Tautan Eksternal</li>
                 <li class="nav-item">
-                  <a class="nav-link" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link" href="https://man2jakarta.sch.id/video/"><i class="fa fa-fw fa-globe"></i>Pengelola Informasi dan Dokumentasi</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="surat.php"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                  <a class="nav-link" href="https://man2jakarta.sch.id/ada/"><i class="fa fa-fw fa-globe"></i>LJK</a>
                 </li>
-              </ul>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/zona-integritas-zi/"><i class="fa fa-fw fa-globe"></i>RENSTRA</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/test/"><i class="fa fa-fw fa-globe"></i>PERKIN</a>
+                </li>
+       </ul>
             </div>
           </nav>
         </div>
@@ -222,7 +245,7 @@
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="page-header">
                   <h2 class="pageheader-title">Permohonan Surat</h2>
-                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-ITESA Smart Administration Dashboard</p>
+                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-Office Smart Administration Dashboard</p>
                   <div class="page-breadcrumb">
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb">
@@ -241,9 +264,9 @@
               <div class="row justify-content-center">
                 <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
                 <?php
-                $dsn = 'mysql:host=localhost;dbname=e-office';
-                $username = 'root';
-                $password = '';
+                $dsn = 'mysql:host=localhost;dbname=u336607621_eoffice';
+                $username = 'u336607621_man2jkt';
+                $password = '$9re[]E[BaR';
                 
                 try {
                     $pdo = new PDO($dsn, $username, $password);
@@ -254,11 +277,16 @@
                 
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
-                    $sql = 'SELECT status_permohonan FROM surat WHERE id = :id';
+                    $sql = 'SELECT status_permohonan, no_surat, tolak_pemohon, surat_pemohon FROM surat WHERE id = :id';
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute(['id' => $id]);
-                    $status = $stmt->fetchColumn();
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+                  if($result){
+                    $status = $result['status_permohonan'];
+                    $no_surat = $result['no_surat'];
+                    $tolak_pemohon = $result['tolak_pemohon'];
+                    $surat_pemohon = $result['surat_pemohon'];
                     if ($status == 'Menunggu Konfirmasi') {
                         echo '<div class="alert alert-primary" role="alert">
                                 <h4 class="alert-heading">Status: Menunggu Konfirmasi</h4>
@@ -269,14 +297,14 @@
                     } else if ($status == 'Dalam Proses') {
                         echo '<div class="alert alert-warning" role="alert">
                                 <h4 class="alert-heading">Status: Dalam Proses</h4>
-                                <p>Permohonan surat Anda telah dikonfirmasi dan sedang dalam tahap pembuatan. Harap menunggu hingga <b>1x24 jam</b> untuk mendapatkan informasi lebih lanjut.</p>
+                                <p>Permohonan surat dengan nomor <b>' . $no_surat . '</b> telah dikonfirmasi dan sedang dalam tahap pembuatan. Harap menunggu hingga <b>1x24 jam</b> untuk mendapatkan informasi lebih lanjut.</p>
                                 <hr>
                                 <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
                                 </div>';
                     } else if ($status == 'Ditolak') {
                         echo '<div class="alert alert-danger" role="alert">
                                 <h4 class="alert-heading">Status: Ditolak</h4>
-                                <p>Permohonan surat Anda telah ditolak oleh admin dengan alasan: …</p>
+                                      <p>Permohonan surat ini ditolak dengan alasan: <b>' . $tolak_pemohon . '</b></p>
                                 <hr>
                                 <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
                                 </div>';
@@ -289,13 +317,32 @@
                     </div>';
                   } else if ($status == 'Selesai') {
                     echo '<div class="alert alert-success" role="alert">
-                      <h4 class="alert-heading">Status: Selesai</h4>
-                      <p>Surat Anda telah berhasil diproses! Silakan unduh surat Anda dengan mengklik tombol berikut <a data-toggle="modal" data-target="#pdfModal" class="btn btn-success btn-sm text-white" role="button"><i class="fas fa-file"></i> Unduh Surat</a> </p>
-                      <hr>
-                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
-                    </div>';
+                                      <h4 class="alert-heading">Status: Selesai</h4>
+                                      <p>Permohonan surat dengan nomor <b>' . $no_surat . '</b> telah berhasil diproses! Silakan unduh surat Anda dengan mengklik tombol berikut <a data-toggle="modal" data-target="#pdfModal1" class="btn btn-success btn-sm text-white" role="button"><i class="fas fa-file"></i> Unduh Surat</a> </p>
+                                      <hr>
+                                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                    </div>
+                                    <div class="modal fade" id="pdfModal1" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="pdfModalLabel">PDF Detail</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <embed src="../assets/lampiran/surat/' . $surat_pemohon . '" type="application/pdf" width="100%" height="500px" />
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>';
                   }
                 }
+              }
                 ?>
                 </div>
                 <!-- Awal Form -->

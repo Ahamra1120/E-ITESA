@@ -1,3 +1,52 @@
+<?php
+// Handle POST request to save letter number and rejection reason
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $dsn = 'mysql:host=localhost;dbname=e-office';
+    $username = 'root';
+    $password = '';
+
+    try {
+        $pdo = new PDO($dsn, $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Function to generate formatted surat number
+        function generateNomorSurat($nomorSurat) {
+            $bulan = date('m');
+            $tahun = date('Y');
+            return "B-$nomorSurat/Ma.09.02/PP.00.6/$bulan/$tahun";
+        }
+
+        if (isset($_POST['action'])) {
+            if ($_POST['action'] == 'save_letter_number') {
+                $no_surat = $_POST['no_surat'];
+                $id = $_POST['id'];
+                $status_permohonan = 'Dalam Proses';
+
+                // Generate formatted surat number
+                $no_surat_formatted = generateNomorSurat($no_surat);
+
+                $sql = 'UPDATE surat SET no_surat = :no_surat, status_permohonan = :status_permohonan WHERE id = :id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['no_surat' => $no_surat_formatted, 'status_permohonan' => $status_permohonan, 'id' => $id]);
+
+                echo 'Nomor surat berhasil disimpan.';
+            } elseif ($_POST['action'] == 'reject_letter' && isset($_POST['tolak_pemohon'])) {
+                $tolak_pemohon = $_POST['tolak_pemohon'];
+                $id = $_POST['id'];
+                $status_permohonan = 'Ditolak';
+
+                $sql = 'UPDATE surat SET tolak_pemohon = :tolak_pemohon, status_permohonan = :status_permohonan WHERE id = :id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['tolak_pemohon' => $tolak_pemohon, 'status_permohonan' => $status_permohonan, 'id' => $id]);
+
+                echo 'Alasan penolakan berhasil disimpan.';
+            }
+        }
+    } catch (PDOException $e) {
+        echo 'Connection failed: ' . $e->getMessage();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -36,26 +85,10 @@
         color: red;
     }
     </style>
-    <title>E-ITESA - Permohonan Surat</title>
+    <title>E-Office - Permohonan Surat</title>
   </head>
 
   <body>
-  <?php
-    include('../connect.php');
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $id = $_POST['id'];
-        $status = $_POST['status'];
-
-        $query = "UPDATE surat SET status_permohonan = '$status' WHERE id = '$id'";
-        if (mysqli_query($conn, $query)) {
-            echo "success";
-        } else {
-            echo "error";
-        }
-        exit;
-    }
-    ?>
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
@@ -66,7 +99,7 @@
       <div class="dashboard-header">
         <nav class="navbar navbar-expand-lg bg-white fixed-top">
           <br />
-          <img alt="Logo E-Itesa" src="../assets/images/logo-user.png" style="width: 300px; height: 57px; margin-left: 30px"/>
+          <img alt="Logo E-Office" src="../assets/images/logo-admin.png" style="width: 300px; height: 57px; margin-left: 30px"/>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -195,10 +228,10 @@
             <ul class="navbar-nav flex-column">
                 <li class="nav-divider">Menu</li>
                 <li class="nav-item">
-                  <a class="nav-link active" href="index.html"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
+                  <a class="nav-link active" href="index.php"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="surat.html"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
+                  <a class="nav-link" href="surat.php"><i class="fa fa-fw fa-envelope"></i>Permohonan Surat</a>
                 </li>
                 <li class="nav-divider">Tautan Eksternal</li>
                 <li class="nav-item">
@@ -235,7 +268,7 @@
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="page-header">
                   <h2 class="pageheader-title">Permohonan Surat</h2>
-                  <p class="pageheader-TEXT">Hello Ahmad, welcome to E-ITESA Smart Administration Dashboard</p>
+                  <p class="pageheader-TEXT">Hello Admin, welcome to E-Office Smart Administration Dashboard</p>
                   <div class="page-breadcrumb">
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb">
@@ -254,63 +287,88 @@
               <div class="row justify-content-center">
                 <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
                 <?php
-                $dsn = 'mysql:host=localhost;dbname=e-office';
-                $username = 'root';
-                $password = '';
-                
-                try {
-                    $pdo = new PDO($dsn, $username, $password);
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                } catch (PDOException $e) {
-                    echo 'Connection failed: ' . $e->getMessage();
-                }
-                
-                if (isset($_GET['id'])) {
-                    $id = $_GET['id'];
-                    $sql = 'SELECT status_permohonan FROM surat WHERE id = :id';
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute(['id' => $id]);
-                    $status = $stmt->fetchColumn();
+                  $dsn = 'mysql:host=localhost;dbname=e-office';
+                  $username = 'root';
+                  $password = '';
 
-                    if ($status == 'Menunggu Konfirmasi') {
-                        echo '<div class="alert alert-primary" role="alert">
-                                <h4 class="alert-heading">Status: Menunggu Konfirmasi</h4>
-                                <p>Permohonan surat anda sedang dalam proses verifikasi. Mohon menunggu maksimal <b>1x24 Jam</b> untuk informasi lebih lanjut</p>
-                                <hr>
-                                <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
-                              </div>';
-                    } else if ($status == 'Dalam Proses') {
-                        echo '<div class="alert alert-warning" role="alert">
-                                <h4 class="alert-heading">Status: Dalam Proses</h4>
-                                <p>Permohonan surat Anda telah dikonfirmasi dan sedang dalam tahap pembuatan. Harap menunggu hingga <b>1x24 jam</b> untuk mendapatkan informasi lebih lanjut.</p>
-                                <hr>
-                                <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
-                                </div>';
-                    } else if ($status == 'Ditolak') {
-                        echo '<div class="alert alert-danger" role="alert">
-                                <h4 class="alert-heading">Status: Ditolak</h4>
-                                <p>Permohonan surat Anda telah ditolak oleh admin dengan alasan: …</p>
-                                <hr>
-                                <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
-                                </div>';
-                    } else if ($status == 'Dibatalkan') {
-                      echo '<div class="alert alert-danger" role="alert">
-                      <h4 class="alert-heading">Status: Dibatalkan</h4>
-                      <p>Permohonan surat ini telah Anda batalkan.</p>
-                      <hr>
-                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
-                    </div>';
-                  } else if ($status == 'Selesai') {
-                    echo '<div class="alert alert-success" role="alert">
-                      <h4 class="alert-heading">Status: Selesai</h4>
-                      <p>Surat Anda telah berhasil diproses! Silakan unduh surat Anda dengan mengklik tombol berikut <a data-toggle="modal" data-target="#pdfModal" class="btn btn-success btn-sm text-white" role="button"><i class="fas fa-file"></i> Unduh Surat</a> </p>
-                      <hr>
-                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
-                    </div>';
+                  try {
+                      $pdo = new PDO($dsn, $username, $password);
+                      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                  } catch (PDOException $e) {
+                      echo 'Connection failed: ' . $e->getMessage();
                   }
-                }
-                ?>
-                </div>
+
+                  if (isset($_GET['id'])) {
+                      $id = $_GET['id'];
+                      $sql = 'SELECT status_permohonan, no_surat, tolak_pemohon, surat_pemohon FROM surat WHERE id = :id';
+                      $stmt = $pdo->prepare($sql);
+                      $stmt->execute(['id' => $id]);
+                      $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                      if ($result) {
+                          $status = $result['status_permohonan'];
+                          $no_surat = $result['no_surat'];
+                          $tolak_pemohon = $result['tolak_pemohon'];
+                          $surat_pemohon = $result['surat_pemohon'];
+
+                          if ($status == 'Menunggu Konfirmasi') {
+                              echo '<div class="alert alert-primary" role="alert">
+                                      <h4 class="alert-heading">Status: Menunggu Konfirmasi</h4>
+                                      <p>Permohonan surat anda sedang dalam proses verifikasi. Mohon menunggu maksimal <b>1x24 Jam</b> untuk informasi lebih lanjut</p>
+                                      <hr>
+                                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                    </div>';
+                          } else if ($status == 'Dalam Proses') {
+                              echo '<div class="alert alert-warning" role="alert">
+                                      <h4 class="alert-heading">Status: Dalam Proses</h4>
+                                      <p>Permohonan surat dengan nomor <b>' . $no_surat . '</b> telah dikonfirmasi dan sedang dalam tahap pembuatan. Silahkan unggah surat yang sudah dibuat pada tombol <b>Unggah Dokumen</b> dibawah</p>
+                                      <hr>
+                                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                    </div>';
+                          } else if ($status == 'Ditolak') {
+                              echo '<div class="alert alert-danger" role="alert">
+                                      <h4 class="alert-heading">Status: Ditolak</h4>
+                                      <p>Permohonan surat ini ditolak dengan alasan: <b>' . $tolak_pemohon . '</b></p>
+                                      <hr>
+                                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                    </div>';
+                          } else if ($status == 'Dibatalkan') {
+                              echo '<div class="alert alert-danger" role="alert">
+                                      <h4 class="alert-heading">Status: Dibatalkan</h4>
+                                      <p>Permohonan surat ini telah Anda batalkan.</p>
+                                      <hr>
+                                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                    </div>';
+                          } else if ($status == 'Selesai') {
+                              echo '<div class="alert alert-success" role="alert">
+                                      <h4 class="alert-heading">Status: Selesai</h4>
+                                      <p>Permohonan surat dengan nomor <b>' . $no_surat . '</b> telah berhasil diproses! Silakan unduh surat Anda dengan mengklik tombol berikut <a data-toggle="modal" data-target="#pdfModal1" class="btn btn-success btn-sm text-white" role="button"><i class="fas fa-file"></i> Unduh Surat</a> </p>
+                                      <hr>
+                                      <p class="mb-0">Hubungi Pelayanan Terpadu Satu Pintu MAN 2 Jakarta untuk informasi lebih lanjut</p>
+                                    </div>
+                                    <div class="modal fade" id="pdfModal1" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="pdfModalLabel">PDF Detail</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <embed src="../assets/lampiran/surat/' . $surat_pemohon . '" type="application/pdf" width="100%" height="500px" />
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>';
+                          }
+                      }
+                  }
+                  ?>
+                  </div>
                 <!-- Awal Form -->
                     <!-- ============================================================== -->
                     <!-- valifation types -->
@@ -335,8 +393,14 @@
                         ?>
                             <div class="card-body">
                             <h5 class="card-header d-flex justify-content-between align-items-center">Biodata Pemohon
-                            <div class="d-flex"><a href="#" class="btn btn-space btn-success <?= $disabled; ?>" data-toggle="modal" data-target="#acceptModal"><i class="fas fa-check"></i> Terima</a>
-                            <button id="batalkanPermohonan" class="btn btn-space btn-danger <?= $disabled; ?>" data-toggle="modal" data-target="#rejectModal"><i class="fas fa-times"></i> Tolak</button></h5>
+                            <div class="d-flex">
+                              <?php if ($status == 'Menunggu Konfirmasi'): ?>
+                                <button id="acceptBtn" class="btn btn-space btn-success <?= $disabled; ?>" data-toggle="modal" ><i class="fas fa-check"></i> Terima</button>
+                                <button id="rejectBtn" class="btn btn-space btn-danger <?= $disabled; ?>" data-toggle="modal" ><i class="fas fa-times"></i> Tolak</button>
+                              <?php endif; ?>
+                            <?php if ($status == 'Dalam Proses'): ?>
+                                <button id="uploadBtn" class="btn btn-space btn-primary" data-toggle="modal" data-target="#pdfModal2"><i class="fas fa-file"></i> Unggah Dokumen</button>
+                            <?php endif; ?></h5>
                             <form id="pengajuanForm"  method="POST">
                             <div class="form-group row">
                                         <label class="col-12 col-sm-3 col-form-label text-sm-right">Nama Lengkap</label>
@@ -479,68 +543,17 @@
                     </div>
                 </div>
             </div>
-  <!-- Modal for Accepting Application -->
-  <div class="modal fade" id="acceptModal" tabindex="-1" role="dialog" aria-labelledby="acceptModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="acceptModalLabel">Generate Nomor Surat</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="acceptForm">
-            <div class="form-group">
-              <label for="generateOption">Pilih Opsi:</label>
-              <select class="form-control" id="generateOption" name="generateOption">
-                <option value="auto">Generate Otomatis</option>
-                <option value="manual">Generate Manual</option>
-              </select>
-            </div>
-            <div class="form-group" id="manualInput" style="display: none;">
-              <label for="customNumber">Nomor Tengah (xxxx):</label>
-              <input type="text" class="form-control" id="customNumber" name="customNumber">
-            </div>
-            <input type="hidden" id="currentMonth" name="currentMonth" value="<?= date('m'); ?>">
-            <input type="hidden" id="currentYear" name="currentYear" value="<?= date('Y'); ?>">
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="saveAccept">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Modal for Rejecting Application -->
-  <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="rejectModalLabel">Alasan Penolakan</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="rejectForm">
-            <div class="form-group">
-              <label for="rejectReason">Alasan:</label>
-              <textarea class="form-control" id="rejectReason" name="rejectReason" rows="3"></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="saveReject">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
+        <!-- alert -->
+        <form method="POST" action="">
+        <input type="hidden" name="action" value="save_letter_number">
+        <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+        <label for="no_surat">Nomor Surat:</label>
+        <input type="text" id="no_surat" name="no_surat" required>
+        <label for="tolak_pemohon">Alasan Penolakan:</label>
+        <input type="text" id="tolak_pemohon" name="tolak_pemohon" required>
+        <button type="submit">Simpan</button>
+    </form>
         <!-- ============================================================== -->
         <!-- footer -->
         <!-- ============================================================== -->
@@ -596,52 +609,130 @@
     <script src="../assets/vendor/datepicker/datepicker.js"></script>
     <script src="../assets/vendor/parsley/parsley.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-  $(document).ready(function() {
-    $('#generateOption').change(function() {
-      if ($(this).val() == 'manual') {
-        $('#manualInput').show();
-      } else {
-        $('#manualInput').hide();
-      }
-    });
+       // Handle accept button click
+       document.getElementById("acceptBtn").onclick = function() {
+            Swal.fire({
+                title: 'Terima Surat',
+                html: `
+                    <form id="acceptForm">
+                        <input type="hidden" name="action" value="save_letter_number">
+                        <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+                        <label for="no_surat">Nomor Surat:</label>
+                        <input type="text" id="no_surat" name="no_surat" required>
+                        <button type="button" id="generateAuto">Generate Otomatis</button>
+                    </form>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                didOpen: () => {
+                    document.getElementById("generateAuto").onclick = function() {
+                        fetch('get_last_surat_number.php')
+                            .then(response => response.json())
+                            .then(data => {
+                                var lastNumber = parseInt(data.last_number) || 0;
+                                Swal.getPopup().querySelector('#no_surat').value = lastNumber + 1;
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+                },
+                preConfirm: () => {
+                    const no_surat = Swal.getPopup().querySelector('#no_surat').value;
+                    if (!no_surat) {
+                        Swal.showValidationMessage(`Nomor surat tidak boleh kosong`);
+                    }
+                    return { no_surat: no_surat };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var formData = new FormData(document.getElementById("acceptForm"));
+                    formData.append('no_surat', result.value.no_surat);
+                    fetch('', {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => response.text()).then(data => {
+                        Swal.fire('Berhasil', data, 'success');
+                    }).catch(error => console.error('Error:', error));
+                }
+            });
+        }
 
-    $('#saveAccept').click(function() {
-      var generateOption = $('#generateOption').val();
-      var customNumber = $('#customNumber').val();
-      var currentMonth = $('#currentMonth').val();
-      var currentYear = $('#currentYear').val();
-      var no_surat;
+        // Handle reject button click
+        document.getElementById("rejectBtn").onclick = function() {
+            Swal.fire({
+                title: 'Tolak Surat',
+                html: `
+                    <form id="rejectForm">
+                        <input type="hidden" name="action" value="reject_letter">
+                        <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+                        <label for="tolak_pemohon">Alasan Penolakan:</label>
+                        <input type="text" id="tolak_pemohon" name="tolak_pemohon" required>
+                    </form>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                preConfirm: () => {
+                    const tolak_pemohon = Swal.getPopup().querySelector('#tolak_pemohon').value;
+                    if (!tolak_pemohon) {
+                        Swal.showValidationMessage(`Alasan penolakan tidak boleh kosong`);
+                    }
+                    return { tolak_pemohon: tolak_pemohon };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var formData = new FormData(document.getElementById("rejectForm"));
+                    formData.append('tolak_pemohon', result.value.tolak_pemohon);
+                    fetch('', {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => response.text()).then(data => {
+                        Swal.fire('Berhasil', data, 'success');
+                    }).catch(error => console.error('Error:', error));
+                }
+            });
+        }
+    </script>
+    <script>
+        document.getElementById('uploadBtn').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Unggah Dokumen',
+                html: '<input type="file" id="fileInput" class="swal2-input">',
+                showCancelButton: true,
+                confirmButtonText: 'Unggah',
+                preConfirm: () => {
+                    const fileInput = document.getElementById('fileInput');
+                    if (!fileInput.files.length) {
+                        Swal.showValidationMessage('Silakan pilih file untuk diunggah');
+                        return false;
+                    }
+                    return fileInput.files[0];
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const file = result.value;
+                    const formData = new FormData();
+                    formData.append('surat_pemohon', file);
 
-      if (generateOption == 'auto') {
-        // Generate letter number automatically
-        no_surat = 'B-' + Math.floor(1000 + Math.random() * 9000) + '/Ma.09.02/PP.00.6/' + currentMonth + '/' + currentYear;
-      } else {
-        // Generate letter number manually
-        no_surat = 'B-' + customNumber + '/Ma.09.02/PP.00.6/' + currentMonth + '/' + currentYear;
-      }
-
-      // Save letter number to database and update status
-      $.post('', { action: 'save_letter_number', no_surat: no_surat, id: <?= $id; ?> }, function(response) {
-        alert('Nomor surat berhasil disimpan!');
-        $('#acceptModal').modal('hide');
-        location.reload(); // Reload the page to update the status
-      });
-    });
-
-    $('#saveReject').click(function() {
-      var rejectReason = $('#rejectReason').val();
-
-      // Save reject reason to database and update status
-      $.post('', { action: 'save_reject_reason', rejectReason: rejectReason, id: <?= $id; ?> }, function(response) {
-        alert('Alasan penolakan berhasil disimpan!');
-        $('#rejectModal').modal('hide');
-        location.reload(); // Reload the page to update the status
-      });
-    });
-  });
-  </script>
-    
+                    fetch('upload.php?id=<?= $id ?>', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Berhasil!', 'Dokumen berhasil diunggah.', 'success');
+                        } else {
+                            Swal.fire('Gagal!', 'Terjadi kesalahan saat mengunggah dokumen: ' + data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat mengunggah dokumen.', 'error');
+                    });
+                }
+            });
+        });
+    </script>
     <!-- Form Validity -->
     <script>
     $('#form').parsley();
@@ -723,36 +814,5 @@
         });
     });
     </script>
-  <?php
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    include('../connect.php');
-
-    $id = $_POST['id'];
-
-    if ($_POST['action'] == 'save_letter_number') {
-      $no_surat = $_POST['no_surat'];
-
-      $sql = "UPDATE surat SET no_surat = '$no_surat', status_permohonan = 'Dalam Proses' WHERE id = '$id'";
-      if (mysqli_query($conn, $sql)) {
-          echo "Nomor surat berhasil disimpan!";
-      } else {
-          echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-      }
-    }
-
-    if ($_POST['action'] == 'save_reject_reason') {
-      $rejectReason = $_POST['rejectReason'];
-
-      $sql = "UPDATE surat SET tolak_pemohon = '$rejectReason', status_permohonan = 'Ditolak' WHERE id = '$id'";
-      if (mysqli_query($conn, $sql)) {
-          echo "Alasan penolakan berhasil disimpan!";
-      } else {
-          echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-      }
-    }
-
-    mysqli_close($conn);
-  }
-  ?>
   </body>
 </html>

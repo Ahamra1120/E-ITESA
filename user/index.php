@@ -315,7 +315,7 @@ $conn->close();
          Menu
         </li>
         <li class="nav-item">
-         <a class="nav-link active" href="index.html">
+         <a class="nav-link active" href="index.php">
           <i class="fa fa-fw fa-user-circle">
           </i>
           Dashboard
@@ -328,6 +328,19 @@ $conn->close();
           Permohonan Surat
          </a>
         </li>
+                <li class="nav-divider">Tautan Eksternal</li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/video/"><i class="fa fa-fw fa-globe"></i>Pengelola Informasi dan Dokumentasi</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/ada/"><i class="fa fa-fw fa-globe"></i>LJK</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/zona-integritas-zi/"><i class="fa fa-fw fa-globe"></i>RENSTRA</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="https://man2jakarta.sch.id/test/"><i class="fa fa-fw fa-globe"></i>PERKIN</a>
+                </li>
        </ul>
       </div>
      </nav>
@@ -436,98 +449,135 @@ $conn->close();
           </div>
          </div>
         </div>
-        <!-- Total -->
-        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
-         <div class="card">
-          <div class="card-body">
-           <div class="d-inline-block">
-            <h4 class="text-muted">
-             Total Permohonan
-            </h4>
-            <h2 class="mb-0">
-             78
-            </h2>
-            <h3 class="mb-0">
-             Surat
-            </h3>
-           </div>
-           <div class="float-right icon-circle-medium icon-box-lg bg-info-light mt-1">
-            <i class="fas fa-envelope fa-fw fa-sm text-info">
-            </i>
-           </div>
-          </div>
-         </div>
+        <?php
+// Database connection
+$dsn = 'mysql:host=localhost;dbname=e-office';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
+
+// Fetch data
+$sql = "SELECT 
+            (SELECT COUNT(*) FROM surat WHERE status_permohonan = 'Diterima') AS diterima,
+            (SELECT COUNT(*) FROM surat WHERE status_permohonan = 'Dalam Proses') AS diproses,
+            (SELECT COUNT(*) FROM surat WHERE status_permohonan = 'Ditolak') AS ditolak,
+            (SELECT COUNT(*) FROM surat WHERE status_permohonan = 'Selesai') AS selesai,
+            (SELECT COUNT(*) FROM surat) AS total";
+$stmt = $pdo->query($sql);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$diterima = $row['diterima'] ?? 0;
+$diproses = $row['diproses'] ?? 0;
+$ditolak = $row['ditolak'] ?? 0;
+$selesai = $row['selesai'] ?? 0;
+$total = $row['total'] ?? 0;
+?>
+            <div class="ecommerce-widget">
+<div class="row justify-content-center">
+<div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-inline-block">
+                <h4 class="text-muted">Permohonan Diterima</h4>
+                <h2 class="mb-0"><?php echo $diterima; ?></h2>
+                <h3 class="mb-0">Surat</h3>
+            </div>
+            <div class="float-right icon-circle-medium icon-box-lg bg-primary-light mt-1">
+                <i class="fas fa-envelope fa-fw fa-sm text-primary"></i>
+            </div>
         </div>
-        <!-- Diterima -->
-        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
-         <div class="card">
-          <div class="card-body">
-           <div class="d-inline-block">
-            <h4 class="text-muted">
-             Permohonan Diterima
-            </h4>
-            <h2 class="mb-0">
-             12
-            </h2>
-            <h3 class="mb-0">
-             Surat
-            </h3>
-           </div>
-           <div class="float-right icon-circle-medium icon-box-lg bg-primary-light mt-1">
-            <i class="fas fa-envelope fa-fw fa-sm text-primary">
-            </i>
-           </div>
-          </div>
-         </div>
+    </div>
+</div>
+    <!-- Diproses -->
+    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-inline-block">
+                    <h4 class="text-muted">Permohonan Diproses</h4>
+                    <h2 class="mb-0"><?php echo $diproses; ?></h2>
+                    <h3 class="mb-0">Surat</h3>
+                </div>
+                <div class="float-right icon-circle-medium icon-box-lg bg-brand-light mt-1">
+                    <i class="fas fa-envelope fa-fw fa-sm text-brand"></i>
+                </div>
+            </div>
         </div>
-       </div>
-       <div class="row justify-content-center">
-        <!-- Diproses -->
-        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
-         <div class="card">
-          <div class="card-body">
-           <div class="d-inline-block">
-            <h4 class="text-muted">
-             Permohonan Diproses
-            </h4>
-            <h2 class="mb-0">
-             3
-            </h2>
-            <h3 class="mb-0">
-             Surat
-            </h3>
-           </div>
-           <div class="float-right icon-circle-medium icon-box-lg bg-brand-light mt-1">
-            <i class="fas fa-envelope fa-fw fa-sm text-brand">
-            </i>
-           </div>
-          </div>
-         </div>
+    </div>
+    <!-- Ditolak -->
+    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-inline-block">
+                    <h4 class="text-muted">Permohonan Ditolak</h4>
+                    <h2 class="mb-0"><?php echo $ditolak; ?></h2>
+                    <h3 class="mb-0">Surat</h3>
+                </div>
+                <div class="float-right icon-circle-medium icon-box-lg bg-secondary-light mt-1">
+                    <i class="fas fa-envelope fa-fw fa-sm text-secondary"></i>
+                </div>
+            </div>
         </div>
-        <!-- Ditolak -->
-        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
-         <div class="card">
-          <div class="card-body">
-           <div class="d-inline-block">
-            <h4 class="text-muted">
-             Permohonan Ditolak
-            </h4>
-            <h2 class="mb-0">
-             2
-            </h2>
-            <h3 class="mb-0">
-             Surat
-            </h3>
-           </div>
-           <div class="float-right icon-circle-medium icon-box-lg bg-secondary-light mt-1">
-            <i class="fas fa-envelope fa-fw fa-sm text-secondary">
-            </i>
-           </div>
-          </div>
-         </div>
+    </div>
+    <!-- Selesai -->
+    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-inline-block">
+                    <h4 class="text-muted">Permohonan Selesai</h4>
+                    <h2 class="mb-0"><?php echo $selesai; ?></h2>
+                    <h3 class="mb-0">Surat</h3>
+                </div>
+                <div class="float-right icon-circle-medium icon-box-lg bg-success-light mt-1">
+                    <i class="fas fa-envelope fa-fw fa-sm text-success"></i>
+                </div>
+            </div>
         </div>
-       </div>
+    </div>
+    <!-- Total Permohonan -->
+    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-inline-block">
+                    <h4 class="text-muted">Total Permohonan</h4>
+                    <h2 class="mb-0"><?php echo $total; ?></h2>
+                    <h3 class="mb-0">Surat</h3>
+                </div>
+                <div class="float-right icon-circle-medium icon-box-lg bg-info-light mt-1">
+                    <i class="fas fa-envelope fa-fw fa-sm text-info"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
        <!-- Status Permohonan -->
+       <?php
+// Database connection
+$dsn = 'mysql:host=localhost;dbname=e-office';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
+
+// Fetch data from the surat table
+$sql = 'SELECT id, no_permohonan, jenis_permohonan, waktu_permohonan, status_permohonan FROM surat';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$suratData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
        <div class="row">
         <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
          <div class="card">
@@ -536,603 +586,58 @@ $conn->close();
           </h5>
           <div class="card-body p-0">
            <div class="table-responsive">
-            <table class="table">
-             <thead class="bg-light">
-              <tr class="border-0">
-               <th class="border-0">
-                #
-               </th>
-               <th class="border-0">
-                No. Permohonan
-               </th>
-               <th class="border-0">
-                Jenis Permohonan
-               </th>
-               <th class="border-0">
-                Waktu Permohonan
-               </th>
-               <th class="border-0">
-                Status
-               </th>
-              </tr>
-             </thead>
-             <tbody>
-              <tr>
-               <td>
-                1
-               </td>
-               <td>
-                id000001
-               </td>
-               <td>
-                Surat Keterangan Siswa
-               </td>
-               <td>
-                27-08-2018 01:22:12
-               </td>
-               <td>
-                <span class="badge-dot badge-brand mr-1">
-                </span>
-                Diproses
-               </td>
-              </tr>
-              <tr>
-               <td>
-                2
-               </td>
-               <td>
-                id000002
-               </td>
-               <td>
-                Surat Permohonan Penelitian
-               </td>
-               <td>
-                25-08-2018 21:12:56
-               </td>
-               <td>
-                <span class="badge-dot badge-success mr-1">
-                </span>
-                Diterima
-               </td>
-              </tr>
-              <tr>
-               <td>
-                3
-               </td>
-               <td>
-                id000003
-               </td>
-               <td>
-                Surat Keterangan Siswa
-               </td>
-               <td>
-                24-08-2018 14:12:77
-               </td>
-               <td>
-                <span class="badge-dot badge-primary mr-1">
-                </span>
-                Menunggu Approval
-               </td>
-              </tr>
-              <tr>
-               <td>
-                4
-               </td>
-               <td>
-                id000004
-               </td>
-               <td>
-                Surat Keterangan Siswa
-               </td>
-               <td>
-                23-08-2018 09:12:35
-               </td>
-               <td>
-                <span class="badge-dot badge-danger mr-1">
-                </span>
-                Ditolak
-               </td>
-              </tr>
-              <tr>
-               <td colspan="9">
-                <a class="btn btn-outline-light float-right" href="surat.html">
-                 View Details
-                </a>
-               </td>
-              </tr>
-             </tbody>
-            </table>
+           <table class="table">
+                        <thead class="bg-light">
+                          <tr class="border-0">
+                            <th class="border-0">#</th>
+                            <th class="border-0">No. Permohonan</th>
+                            <th class="border-0">Jenis Permohonan</th>
+                            <th class="border-0">Waktu Permohonan</th>
+                            <th class="border-0">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $no = 1;
+                        foreach ($suratData as $row) {
+                            echo '<tr>';
+                            echo '<td>' . $no++ . '</td>';
+                            echo '<td>' . htmlspecialchars($row['no_permohonan']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['jenis_permohonan']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['waktu_permohonan']) . '</td>';
+                            echo '<td>';
+                            switch ($row['status_permohonan']) {
+                                case 'Dibatalkan':
+                                    echo '<span class="badge-dot badge-danger mr-1"></span>Dibatalkan';
+                                    break;
+                                case 'Ditolak':
+                                    echo '<span class="badge-dot badge-danger mr-1"></span>Ditolak';
+                                    break;
+                                case 'Menunggu Konfirmasi':
+                                    echo '<span class="badge-dot badge-primary mr-1"></span>Menunggu Approval';
+                                    break;
+                                case 'Selesai':
+                                    echo '<span class="badge-dot badge-success mr-1"></span>Selesai';
+                                    break;
+                                case 'Dalam Proses':
+                                    echo '<span class="badge-dot badge-brand mr-1"></span>Dalam Proses';
+                                    break;
+                                default:
+                                    echo '<span class="badge-dot badge-secondary mr-1"></span>Unknown';
+                                    break;
+                            }
+                        }
+                        ?>
+                        
+                        <tr>
+                              <td colspan="9"><a href="surat.php" class="btn btn-outline-light float-right">View Details</a></td>
+                            </tr>
+                        </tbody>
+                      </table>
            </div>
           </div>
          </div>
         </div>
-        <!-- Peminjaman Ruangan -->
-        <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
-         <div class="card">
-          <h5 class="card-header">
-           Peminjaman Ruangan
-          </h5>
-          <div class="card-body p-0">
-           <div class="table-responsive">
-            <table class="table">
-             <thead class="bg-light">
-              <tr class="border-0">
-               <th class="border-0">
-                #
-               </th>
-               <th class="border-0">
-                Ruangan
-               </th>
-               <th class="border-0">
-                Lokasi
-               </th>
-               <th class="border-0">
-                Ketersediaan
-               </th>
-               <th class="border-0">
-                Reservasi
-               </th>
-              </tr>
-             </thead>
-             <tbody>
-              <tr>
-               <td>
-                1
-               </td>
-               <td>
-                Lab. Komputer
-               </td>
-               <td>
-                Gedung Laboratorium dan Perpustakaan MAN 2 Jakarta
-               </td>
-               <td>
-                <span class="badge badge-pill badge-primary">
-                 Tersedia
-                </span>
-               </td>
-               <td>
-                <a class="btn btn-dark btn-sm" href="#">
-                 <i class="fas fa-building">
-                 </i>
-                 Detail
-                </a>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                2
-               </td>
-               <td>
-                Lab. Fisika
-               </td>
-               <td>
-                Gedung Laboratorium dan Perpustakaan MAN 2 Jakarta
-               </td>
-               <td>
-                <span class="badge badge-pill badge-warning">
-                 Sedang Terpakai
-                </span>
-               </td>
-               <td>
-                <a aria-disabled="true" class="btn btn-dark btn-sm disabled" href="#" role="button">
-                 <i class="fas fa-building">
-                 </i>
-                 Detail
-                </a>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                3
-               </td>
-               <td>
-                Lab. Biologi
-               </td>
-               <td>
-                Gedung Laboratorium dan Perpustakaan MAN 2 Jakarta
-               </td>
-               <td>
-                <span class="badge badge-pill badge-warning">
-                 Sedang Terpakai
-                </span>
-               </td>
-               <td>
-                <a aria-disabled="true" class="btn btn-dark btn-sm disabled" href="#" role="button">
-                 <i class="fas fa-building">
-                 </i>
-                 Detail
-                </a>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                4
-               </td>
-               <td>
-                Aula
-               </td>
-               <td>
-                Gedung Laboratorium dan Perpustakaan MAN 2 Jakarta
-               </td>
-               <td>
-                <span class="badge badge-pill badge-secondary">
-                 Tidak Tersedia
-                </span>
-               </td>
-               <td>
-                <a aria-disabled="true" class="btn btn-dark btn-sm disabled" href="#" role="button">
-                 <i class="fas fa-building">
-                 </i>
-                 Detail
-                </a>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                5
-               </td>
-               <td>
-                R. Kelas
-               </td>
-               <td>
-                XI-H
-               </td>
-               <td>
-                <span class="badge badge-pill badge-primary">
-                 Tersedia
-                </span>
-               </td>
-               <td>
-                <a class="btn btn-dark btn-sm" href="#">
-                 <i class="fas fa-building">
-                 </i>
-                 Detail
-                </a>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                6
-               </td>
-               <td>
-                R. Kelas
-               </td>
-               <td>
-                X-B
-               </td>
-               <td>
-                <span class="badge badge-pill badge-secondary">
-                 Tidak Tersedia
-                </span>
-               </td>
-               <td>
-                <a aria-disabled="true" class="btn btn-dark btn-sm disabled" href="#" role="button">
-                 <i class="fas fa-building">
-                 </i>
-                 Detail
-                </a>
-               </td>
-              </tr>
-              <tr>
-               <td colspan="5">
-                <a class="btn btn-outline-light float-right" href="ruangan.html">
-                 View Details
-                </a>
-               </td>
-              </tr>
-             </tbody>
-            </table>
-           </div>
-          </div>
-         </div>
-        </div>
-        <!-- Peminjaman Barang -->
-        <div class="col-xl-15 col-lg-12 col-md-6 col-sm-12 col-12">
-         <div class="card">
-          <h5 class="card-header">
-           Peminjaman Barang
-          </h5>
-          <div class="card-body p-0">
-           <div class="table-responsive">
-            <table class="table">
-             <thead class="bg-light">
-              <tr class="border-0">
-               <th class="border-0">
-                #
-               </th>
-               <th class="border-0">
-                Barang
-               </th>
-               <th class="border-0">
-                Jenis Barang
-               </th>
-               <th class="border-0">
-                Ketersediaan
-               </th>
-               <th class="border-0">
-                Aksi
-               </th>
-              </tr>
-             </thead>
-             <tbody>
-              <tr>
-               <td>
-                1
-               </td>
-               <td>
-                Kabel Roll
-               </td>
-               <td>
-                Elektronik
-               </td>
-               <td>
-                <span class="badge badge-pill badge-primary">
-                 10
-                </span>
-               </td>
-               <!-- Button trigger modal -->
-               <td>
-                <a class="btn btn-dark btn-sm" data-target="#exampleModal" data-toggle="modal" href="#">
-                 <i class="fas fa-archive">
-                 </i>
-                 Pinjam
-                </a>
-                <!-- Modal -->
-                <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" role="dialog" tabindex="-1">
-                 <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                     Peminjaman Kabel Roll
-                    </h5>
-                    <a aria-label="Close" class="close" data-dismiss="modal" href="#">
-                     <span aria-hidden="true">
-                      ×
-                     </span>
-                    </a>
-                   </div>
-                   <div class="modal-body">
-                    <form data-parsley-validate="" id="validationform" novalidate="">
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Nama Lengkap
-                      </label>
-                      <div class="col-12 col-sm-9">
-                       <input class="form-control" placeholder="" required="" type="text">
-                       </input>
-                      </div>
-                     </div>
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Jenis Kelamin
-                      </label>
-                      <div class="col-12 col-sm-8 col-lg-6">
-                       <label class="custom-control custom-radio custom-control-inline">
-                        <input checked="" class="custom-control-input" name="radio-inline" type="radio">
-                         <span class="custom-control-label">
-                          Laki-Laki
-                         </span>
-                        </input>
-                       </label>
-                       <label class="custom-control custom-radio custom-control-inline">
-                        <input class="custom-control-input" name="radio-inline" type="radio">
-                         <span class="custom-control-label">
-                          Perempuan
-                         </span>
-                        </input>
-                       </label>
-                      </div>
-                     </div>
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Kelas
-                      </label>
-                      <div class="col-12 col-sm-9">
-                       <select class="custom-select" id="inputGroupSelect01">
-                        <option selected="">
-                         Silahkan Pilih...
-                        </option>
-                        <option value="1">
-                         X
-                        </option>
-                        <option value="2">
-                         XI
-                        </option>
-                        <option value="3">
-                         XII
-                        </option>
-                       </select>
-                      </div>
-                     </div>
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Qty.
-                      </label>
-                      <div class="col-12 col-sm-9">
-                       <input class="form-control" placeholder="" required="" type="number"/>
-                      </div>
-                     </div>
-                     <!-- ... (other form groups) ... -->
-                     <div class="modal-footer">
-                      <a class="btn btn-secondary" data-dismiss="modal" href="#">
-                       Close
-                      </a>
-                      <a class="btn btn-primary" href="#">
-                       Submit
-                      </a>
-                     </div>
-                    </form>
-                   </div>
-                  </div>
-                 </div>
-                </div>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                2
-               </td>
-               <td>
-                Proyektor
-               </td>
-               <td>
-                Elektronik
-               </td>
-               <td>
-                <span class="badge badge-pill badge-warning">
-                 2
-                </span>
-               </td>
-               <td>
-                <!-- Button trigger modal -->
-                <a class="btn btn-dark btn-sm" data-target="#exampleModal1" data-toggle="modal" href="#">
-                 <i class="fas fa-archive">
-                 </i>
-                 Pinjam
-                </a>
-                <!-- Modal -->
-                <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal1" role="dialog" tabindex="-1">
-                 <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                     Peminjaman Proyektor
-                    </h5>
-                    <a aria-label="Close" class="close" data-dismiss="modal" href="#">
-                     <span aria-hidden="true">
-                      ×
-                     </span>
-                    </a>
-                   </div>
-                   <div class="modal-body">
-                    <form data-parsley-validate="" id="validationform" novalidate="">
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Nama Lengkap
-                      </label>
-                      <div class="col-12 col-sm-9">
-                       <input class="form-control" placeholder="" required="" type="text"/>
-                      </div>
-                     </div>
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Jenis Kelamin
-                      </label>
-                      <div class="col-12 col-sm-8 col-lg-6">
-                       <label class="custom-control custom-radio custom-control-inline">
-                        <input checked="" class="custom-control-input" name="radio-inline" type="radio"/>
-                        <span class="custom-control-label">
-                         Laki-Laki
-                        </span>
-                       </label>
-                       <label class="custom-control custom-radio custom-control-inline">
-                        <input class="custom-control-input" name="radio-inline" type="radio"/>
-                        <span class="custom-control-label">
-                         Perempuan
-                        </span>
-                       </label>
-                      </div>
-                     </div>
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Kelas
-                      </label>
-                      <div class="col-12 col-sm-9">
-                       <select class="custom-select" id="inputGroupSelect01">
-                        <option selected="">
-                         Silahkan Pilih...
-                        </option>
-                        <option value="1">
-                         X
-                        </option>
-                        <option value="2">
-                         XI
-                        </option>
-                        <option value="3">
-                         XII
-                        </option>
-                       </select>
-                      </div>
-                     </div>
-                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right">
-                       Qty.
-                      </label>
-                      <div class="col-12 col-sm-9">
-                       <input class="form-control" disabled="" placeholder="1" required="" type="number"/>
-                       <p class="text-danger">
-                        Hanya diperbolehkan untuk meminjam 1 Item
-                       </p>
-                      </div>
-                     </div>
-                     <div class="modal-footer">
-                      <a class="btn btn-secondary" data-dismiss="modal" href="#">
-                       Close
-                      </a>
-                      <a class="btn btn-primary" href="#">
-                       Submit
-                      </a>
-                     </div>
-                    </form>
-                   </div>
-                  </div>
-                 </div>
-                </div>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                3
-               </td>
-               <td>
-                Speaker
-               </td>
-               <td>
-                Elektronik
-               </td>
-               <td>
-                <span class="badge badge-pill badge-secondary">
-                 Tidak Tersedia
-                </span>
-               </td>
-               <td>
-                <a aria-disabled="true" class="btn btn-dark btn-sm disabled" href="#" role="button">
-                 <i class="fas fa-archive">
-                 </i>
-                 Pinjam
-                </a>
-               </td>
-              </tr>
-              <tr>
-               <td>
-                4
-               </td>
-               <td>
-                Spidol Hitam
-               </td>
-               <td>
-                Alat Tulis Kantor
-               </td>
-               <td>
-                <span class="badge badge-pill badge-secondary">
-                 Tidak Tersedia
-                </span>
-               </td>
-               <td>
-                <a aria-disabled="true" class="btn btn-dark btn-sm disabled" href="#" role="button">
-                 <i class="fas fa-archive">
-                 </i>
-                 Pinjam
-                </a>
-               </td>
-              </tr>
-             </tbody>
-            </table>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
       </div>
      </div>
     </div>
